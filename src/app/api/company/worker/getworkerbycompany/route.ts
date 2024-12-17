@@ -9,8 +9,10 @@ async function getUserFromToken(req: NextRequest) {
     if (!token) {
       return { error: 'Unauthorized', status: 401 };
     }
+
   
-    const user = await Company.findOne({ email: token.email }).exec();
+    const user = await Company.findOne({ _id: token.id }).exec();
+
     if (!user) {
       return { error: 'User not found', status: 404 };
     }
@@ -25,8 +27,9 @@ try{
       return NextResponse.json({ error: result.error }, { status: result.status });
     }
     
+    console.log(result.user)
       const worker = await Worker.find({ company: result.user._id}).sort({ createdAt: -1 }); // Latest created first
-
+     
     if(!worker){
       return NextResponse.json({ message: 'no data' }, { status: 501 });
     }

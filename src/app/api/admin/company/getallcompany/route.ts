@@ -10,7 +10,7 @@ async function getUserFromToken(req: NextRequest) {
       return { error: 'Unauthorized', status: 401 };
     }
   
-    const user = await Admin.findOne({ email: token.email }).exec();
+    const user = await Admin.findOne({ _id: token.id }).exec();
     if (!user) {
       return { error: 'User not found', status: 404 };
     }
