@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import { getToken } from 'next-auth/jwt';
-import Admin from '@/models/Admin';
-import Subscription from '@/models/Subscription';
+import Customer from '@/models/Customer';
+import Company from '@/models/Company';
 
 async function getUserFromToken(req: NextRequest) {
   try {
@@ -12,7 +12,7 @@ async function getUserFromToken(req: NextRequest) {
     }
 
     // Fetch the user from the Admin model based on the token email
-    const user = await Admin.findById({ _id: token.id }).exec();
+    const user = await Company.findById({ _id: token.id }).exec();
     if (!user) {
       return { error: 'User not found', status: 404 };
     }
@@ -20,15 +20,15 @@ async function getUserFromToken(req: NextRequest) {
     return { user };
   } catch (error) {
     console.error('Error fetching user from token:', error);
-    return { error: 'Internal server error', status: 501 };
+    return { error: 'Internal server error', status: 500 };
   }
 }
 
-export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: NextRequest, context: { params:Promise<{ id: string }> }) {
   try {
     // Wait for params to be available
-    const { id } = await context.params; // Ensure params is awaited before use
-   
+   // Ensure params is awaited before use
+   const { id } = await context.params;
     // Connect to the database
     await connectToDatabase();
 
@@ -40,24 +40,22 @@ export async function GET(req: NextRequest, context: { params: Promise<{ id: str
 
     // Validate the provided ID
     if (!id) {
-      return NextResponse.json({ message: 'Invalid or missing subscription ID' }, { status: 400 });
+      return NextResponse.json({ message: 'Invalid or missing Customer ID' }, { status: 400 });
     }
-        // Check if the subscription exists
-    const existingSubscription= await Subscription.findById(id);
-    
-    if (!existingSubscription) {
-      return NextResponse.json(
-        { message: "Subscription not found" },
-        { status: 404 }
-      );
+    const existingCustomer= await Customer.findOne({_id:id,company:result.user._id});
+    if(!existingCustomer){
+        return NextResponse.json({ message: '  Customer not exist ' }, { status: 405 });
     }
-  
-   
+    // Check if the worker exists
+    const deletedCustomer= await Customer.findByIdAndDelete(id);
+    if (!deletedCustomer) {
+      return NextResponse.json({ message: ' Customer not found deleting' }, { status: 406 });
+    }
 
     // Return success response
-    return NextResponse.json({existingSubscription }, { status: 200 });
+    return NextResponse.json({ message: 'Customer deleted successfully' }, { status: 200 });
   } catch (error) {
-    console.error('Error upadate status subscription:', error);
+    console.error('Error deleting Customer:', error);
     return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
   }
 }

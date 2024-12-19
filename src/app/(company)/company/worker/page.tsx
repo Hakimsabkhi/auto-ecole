@@ -6,18 +6,19 @@ import { CiEdit } from 'react-icons/ci';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 
 // Define a type for the worker object
-interface Customer {
+interface Worker {
   _id: string;
   name: string;
   username: string;
   phone: string;
+  formateur:string;
 }
 
 const Page = () => {
   // State to store worker data and loading status
    const [isPopupOpen, setIsPopupOpen] = useState(false);
-     const [selected, setSelected] = useState<Customer | null>(null);
-  const [workers, setWorkers] = useState<Customer[]>([]);
+     const [selected, setSelected] = useState<Worker | null>(null);
+  const [workers, setWorkers] = useState<Worker[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   // Fetch workers from the API
@@ -47,7 +48,7 @@ const Page = () => {
   useEffect(() => {
     fetchWorkers();
   }, []);  
-  const handleDeleteClick = (worker: Customer) => {
+  const handleDeleteClick = (worker: Worker) => {
     setSelected(worker);
     setIsPopupOpen(true);
   };
@@ -98,6 +99,7 @@ const Page = () => {
             <th className="px-4 py-2 text-left font-medium text-gray-600">Name</th>
             <th className="px-4 py-2 text-left font-medium text-gray-600">Username</th>
             <th className="px-4 py-2 text-left font-medium text-gray-600">Phone</th>
+            <th className="px-4 py-2 text-left font-medium text-gray-600">Formateur</th>
             <th className="px-4 py-2 text-left font-medium text-gray-600">Action</th>
           </tr>
         </thead>
@@ -107,6 +109,7 @@ const Page = () => {
               <td className="px-4 py-2">{worker.name}</td>
               <td className="px-4 py-2">{worker.username}</td>
               <td className="px-4 py-2">{worker.phone}</td>
+              <td className="px-4 py-2">{worker.formateur}</td>
               <td className="px-4 py-2">
                 <div className="p-2 flex gap-2">
                   <Link

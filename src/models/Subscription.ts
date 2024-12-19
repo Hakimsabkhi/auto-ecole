@@ -4,8 +4,9 @@ import { IAdmin } from './Admin';
 export interface ISubscription extends Document {
   name: string;
   price:number;
-  life:string;
+  life:number;
   status:string;
+  pricingstatus:string;
   admin:IAdmin|string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -15,8 +16,9 @@ export interface ISubscription extends Document {
 const SubscriptionSchema: Schema = new Schema({
   name: { type: String, required: true },
   price:{type:Number},
-  life: { type: String, required: true },
+  life: { type: Number, required: true },
   status:{type:String,default:'Inactive'},
+  pricingstatus:{type:String,required:true},
   admin: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
  
 },{ timestamps: true });

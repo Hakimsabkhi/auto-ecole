@@ -13,7 +13,7 @@ async function getUserFromToken(req: NextRequest) {
     }
 
     // Fetch the user from the Admin model based on the token email
-    const user = await Admin.findOne({ _id: token.id }).exec();
+    const user = await Admin.findById({ _id: token.id }).exec();
     if (!user) {
       return { error: 'User not found', status: 404 };
     }

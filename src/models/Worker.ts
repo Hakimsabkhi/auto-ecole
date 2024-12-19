@@ -6,6 +6,7 @@ export interface IWorker extends Document {
   username: string;
   phone: string;
   password?: number;
+  formateur:string;
   company: ICompany | string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -17,6 +18,7 @@ const WorkerSchema: Schema = new Schema(
     username: { type: String, required: true },
     phone: { type: Number },
     password: { type: String },
+    formateur:{type:String,required:true},
     company: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },
   },
   { timestamps: true }

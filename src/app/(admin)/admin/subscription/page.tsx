@@ -11,8 +11,9 @@ interface Subscription {
   _id: string;
   name: string;
   status: string;
-  price: string;
-  life:string;
+  price: number;
+  life:number;
+  pricingstatus:string;
 }
 
 const Page = () => {
@@ -133,7 +134,25 @@ const Page = () => {
           {subscriptions.map((subscription) => (
             <tr key={subscription._id} className="border-t hover:bg-gray-50">
               <td className="px-4 py-2">{subscription.name}</td>
-              <td className="px-4 py-2">{subscription.status}</td>
+              <td className="px-4 py-2"> <div className=' flex gap-2'> <span
+    className={`inline-block px-2 py-1 rounded ${
+      subscription.status === "Active"
+        ? "bg-green-500 text-white"
+        : "bg-gray-400 text-white"
+    }`}
+  >
+    {subscription.status}
+  </span>
+
+  <span
+    className={`inline-block px-2 py-1 rounded ${
+      subscription.pricingstatus === "free"
+        ? "bg-blue-500 text-white"
+        : "bg-yellow-500 text-white"
+    }`}
+  >
+    {subscription.pricingstatus}
+  </span></div></td>
               <td className="px-4 py-2">{subscription.price} TND</td>
               <td className="px-4 py-2">{subscription.life} DAY</td>
               <td className="px-4 py-2">

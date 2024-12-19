@@ -10,7 +10,7 @@ async function getUserFromToken(req: NextRequest) {
       return { error: 'Unauthorized', status: 401 };
     }
   
-    const user = await Admin.findOne({ _id: token.id }).exec();
+    const user = await Admin.findById({ _id: token.id }).exec();
     if (!user) {
       return { error: 'User not found', status: 404 };
     }
@@ -27,12 +27,18 @@ export async function POST(req:NextRequest) {
    
     // Parse the request body
    const {name,price,life} = await req.json();
+   
     // Validate the input
-   if(!name ||!life){
+   if(!name ){
     return NextResponse.json({error:'data empty check your input'},{status:400})
    }
-
-   const newSubscription = new Subscription({name,price,life,admin:result.user._id})
+   let pricingstatus = '';
+   if(price===0){
+     pricingstatus="free"
+   }else if (price>0){
+    pricingstatus="paid"
+   }
+   const newSubscription = new Subscription({name,price,life,admin:result.user._id,pricingstatus})
   
    await newSubscription.save();
    

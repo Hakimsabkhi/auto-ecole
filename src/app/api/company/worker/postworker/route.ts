@@ -12,7 +12,7 @@ async function getUserFromToken(req: NextRequest) {
       return { error: 'Unauthorized', status: 401 };
     }
   
-    const user = await Company.findOne({ _id: token.id }).exec();
+    const user = await Company.findById({ _id: token.id }).exec();
     if (!user) {
       return { error: 'User not found', status: 404 };
     }
@@ -28,10 +28,10 @@ export async function POST(req:NextRequest) {
       }
     // Parse the request body
    const body = await req.json();
-    const { name,username,phone,password } = body; 
+    const { name,username,phone,password ,formateur} = body; 
 console.log(body)
     // Validate the input
-    if ( !password || !username||!name||!phone) {
+    if ( !password || !username||!name||!phone||!formateur) {
       return NextResponse.json({ error: 'Name, email, and password are required' }, { status: 400 });
     }
 
@@ -63,7 +63,8 @@ if (existingWorker) {
       name,
       phone:Number(phone),
       password: hashedPassword,
-      company:result.user._id
+      formateur,
+      company:result.user._id,
     }); 
 
     // Respond with the created user's data (excluding the password)

@@ -13,7 +13,7 @@ async function getUserFromToken(req: NextRequest) {
     }
 
     // Fetch the user from the Admin model based on the token email
-    const user = await Company.findOne({ _id: token.id }).exec();
+    const user = await Company.findById({ _id: token.id }).exec();
     if (!user) {
       return { error: 'User not found', status: 404 };
     }
@@ -32,7 +32,7 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
    
     // Connect to the database
     await connectToDatabase();
-    const {name,phone,password,} = await req.json();
+    const {name,phone,password,formateur} = await req.json();
 
     // Authenticate the user
     const result = await getUserFromToken(req);
@@ -63,7 +63,11 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
          const hashedPassword = await bcrypt.hash(password, 12);
          existingWorker.password=hashedPassword;
     }
-  
+    if(formateur!=''){
+      
+      existingWorker.formateur=formateur
+ }
+
       
       await existingWorker.save();
    

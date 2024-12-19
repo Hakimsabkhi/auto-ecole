@@ -11,7 +11,7 @@ async function getUserFromToken(req: NextRequest) {
     }
 
   
-    const user = await Company.findOne({ _id: token.id }).exec();
+    const user = await Company.findById({ _id: token.id }).exec();
 
     if (!user) {
       return { error: 'User not found', status: 404 };
@@ -27,7 +27,7 @@ try{
       return NextResponse.json({ error: result.error }, { status: result.status });
     }
     
-    console.log(result.user)
+   
       const worker = await Worker.find({ company: result.user._id}).sort({ createdAt: -1 }); // Latest created first
      
     if(!worker){
