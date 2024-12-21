@@ -6,7 +6,7 @@ import React from 'react'
 const WorkerNav = () => {
   return (
     <>
-    <nav className="bg-[#f7f7f8] h-screen  min-w-[250px] py-6 px-4 font-[sans-serif]">
+    <nav className="bg-[#f7f7f8] h-screen-[100%]  min-w-[250px] py-6 px-4 font-[sans-serif]">
 
   
     <div className="overflow-auto py-6 h-full mt-4">

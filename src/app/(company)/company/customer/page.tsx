@@ -218,7 +218,7 @@ const CustomerTable: React.FC = () => {
         <tbody>
           {customers.map((customer) => (
             <tr key={customer._id} className="border-t hover:bg-gray-50">
-              <td className="py-2 px-4">{customer.cin}</td>
+              <td className="py-2 px-4  font-bold">{customer.cin}</td>
               <td className="py-2 px-4">
                 {customer.firstname} {customer.lastname}
               </td>
@@ -227,7 +227,7 @@ const CustomerTable: React.FC = () => {
               <td className="py-2 px-4">{formatDate(customer.createdAt)}</td>
               <td className="py-2 px-4">{customer.total}DT</td>
               <td className="py-2 px-4">{customer.avance}DT</td>
-              <td className="py-2 px-4">
+              <td className="py-2 px-4  text-xs font-bold">
                 {customer.worker.map((w) => (
                   <div key={w.name}>
                     <span>
@@ -236,39 +236,43 @@ const CustomerTable: React.FC = () => {
                   </div>
                 ))}
               </td>
-              <td className="py-2 px-4">
+              <td className="py-2 px-4 ">
+                <div className=" grid grid-rows-3 gap-2 ">
                 <button
                   onClick={() => handleChange(customer._id,"total", "+")}
-                  className="ml-2 p-1 bg-green-500 text-white rounded"
+                  className="ml-1 p-1 bg-green-500 text-white rounded"
                 >
                   +
                 </button>
-                {customer.numbheurestotal}H
+               <span className="ml-3 p-1">{customer.numbheurestotal}H</span> 
                 <button
                   onClick={() => handleChange(customer._id,"total", "-")}
-                  className="ml-2 p-1 bg-red-500 text-white rounded"
+                  className="ml-1 p-1 bg-red-500 text-white rounded"
                 >
                   -
                 </button>
+                </div>
               </td>
               <td className="py-2 px-4">
+                <div className=" grid grid-rows-3 gap-2 ">
                 <button
                   onClick={() => handleChange(customer._id,"effectuer", "+")}
                   className="ml-2 p-1 bg-green-500 text-white rounded"
                 >
                   +
                 </button>
-                {customer.numbheureseffectuer}H
+                <span className="ml-5 p-1">{customer.numbheureseffectuer}H</span> 
                 <button
                   onClick={() => handleChange(customer._id,"effectuer", "-")}
                   className="ml-2 p-1 bg-red-500 text-white rounded"
                 >
                   -
                 </button>
+                </div>
               </td>
 
               <td className="py-2 px-4">
-                <div className="grid grid-flow-row">
+                <div className="grid grid-flow-row text-xs font-bold">
                   <span className="w-[150%]">
                     Code:{formatDateexam(customer.dateexcode)}
                   </span>
