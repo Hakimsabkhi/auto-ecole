@@ -34,22 +34,7 @@ export async function PUT(
 
     // Connect to the database
     await connectToDatabase();
-    const {
-      cin,
-      firstname,
-      lastname,
-      phone,
-      activities,
-      total,
-      avance,
-      worker,
-      numbheurestotal,
-      numbheureseffectuer,
-      dateexcode,
-    dateexconduit,
-    dateexpark,
-    } = await req.json();
-    
+    const {val,ref,input}= await req.json();
     // Authenticate the user
     const result = await getUserFromToken(req);
     if ("error" in result) {
@@ -67,7 +52,7 @@ export async function PUT(
       );
     }
     // Check if the subscription exists
-    const existingCustomer = await Customer.findOne({
+  const existingCustomer = await Customer.findOne({
       _id: id,
       company: result.user._id,
     });
@@ -77,46 +62,22 @@ export async function PUT(
         { status: 404 }
       );
     }
-
-    if (cin != "") {
-      existingCustomer.cin = cin;
+    if(val==="total"&&ref==="+"){
+        existingCustomer.numbheurestotal+=Number(input);
     }
-    if (firstname != "") {
-      existingCustomer.firstname = firstname;
+    if(val==="total"&&ref==="-"&&existingCustomer.numbheurestotal>0){
+        existingCustomer.numbheurestotal-=Number(input);
     }
-    if (lastname != "") {
-      existingCustomer.lastname = lastname;
+    if(val==="effectuer"&&ref==="+"){
+        existingCustomer.numbheureseffectuer+=Number(input);
     }
-    if (total != "") {
-      existingCustomer.total = total;
+    if(val==="effectuer"&&ref==="-"&&existingCustomer.numbheureseffectuer>0){
+       
+        existingCustomer.numbheureseffectuer-=Number(input);
     }
-
-    if (phone != null) {
-      existingCustomer.phone = Number(phone);
-    }
-    if (avance != null) {
-      existingCustomer.avance = Number(avance);
-    }
-    if (numbheurestotal != null) {
-      existingCustomer.numbheurestotal = Number(numbheurestotal);
-    }
-    if (numbheureseffectuer != null) {
-      existingCustomer.numbheureseffectuer = Number(numbheureseffectuer);
-    }
-    if (dateexcode != "") {
-      existingCustomer.dateexcode = dateexcode;
-    }
-    if (dateexconduit != "") {
-      existingCustomer.dateexconduit = dateexconduit;
-    }
-    if (dateexpark != "") {
-      existingCustomer.dateexpark = dateexpark;
-    }
-    existingCustomer.activities = activities;
-    existingCustomer.worker = worker;
-    existingCustomer.company = result.user._id;
-     await existingCustomer.save();
-
+   
+     await existingCustomer.save(); 
+ 
     // Return success response
     return NextResponse.json(
       { message: "worker upadate status successfully" },

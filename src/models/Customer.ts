@@ -14,6 +14,9 @@ export interface ICustomer extends Document {
   worker: (IWorker | string)[];
   numbheurestotal:number;
   numbheureseffectuer:number;
+  dateexcode:Date;
+  dateexconduit:Date;
+  dateexpark:Date;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -31,6 +34,9 @@ const CustomerSchema: Schema = new Schema(
     worker: { type: [mongoose.Schema.Types.ObjectId], ref: "Worker" },
     numbheurestotal:{ type: Number, required: false },
     numbheureseffectuer:{ type: Number, required: false },
+    dateexcode:{ type: Date, required: false },
+    dateexconduit:{ type: Date, required: false },
+    dateexpark:{ type: Date, required: false },
   },
   { timestamps: true }
 );

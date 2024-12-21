@@ -14,6 +14,9 @@ interface CustomerFormData {
   worker: Worker[]; // Changed from string[] to Worker[] to store full worker object
   numbheurestotal: number;
   numbheureseffectuer: number;
+  dateexcode:string;
+    dateexconduit:string;
+    dateexpark:string;
 }
 
 interface Worker {
@@ -38,8 +41,15 @@ const CustomerForm = ({ params }: { params: Promise<{ id: string }> }) => {
     worker: [],
     numbheurestotal: 0,
     numbheureseffectuer: 0,
+    dateexcode:"",
+    dateexconduit:"",
+    dateexpark:"",
   });
-
+  const formatDate = (date: string | Date | undefined) => {
+    if (!date) return "";
+    const d = new Date(date);
+    return isNaN(d.getTime()) ? "" : d.toISOString().split('T')[0];
+  };
   useEffect(() => {
     const fetchParams = async () => {
       try {
@@ -61,7 +71,7 @@ const CustomerForm = ({ params }: { params: Promise<{ id: string }> }) => {
             `/api/company/customer/getcustomerbyid/${unwrappedParams.id}`
           );
           const { existingCustomer } = await response.json();
-
+          console.log(existingCustomer.dateexcode);
           setFormData({
             cin: existingCustomer.cin,
             firstname: existingCustomer.firstname,
@@ -73,6 +83,9 @@ const CustomerForm = ({ params }: { params: Promise<{ id: string }> }) => {
             worker: existingCustomer.worker,
             numbheurestotal: existingCustomer.numbheurestotal,
             numbheureseffectuer: existingCustomer.numbheureseffectuer,
+            dateexcode: formatDate(existingCustomer.dateexcode), // Format date
+            dateexconduit: formatDate(existingCustomer.dateexconduit), // Format date
+            dateexpark: formatDate(existingCustomer.dateexpark), // Format date
           });
         } catch (error) {
           console.error("Error fetching company data:", error);
@@ -160,6 +173,9 @@ const CustomerForm = ({ params }: { params: Promise<{ id: string }> }) => {
         worker: [],
         numbheurestotal: 0,
         numbheureseffectuer: 0,
+        dateexcode:"",
+    dateexconduit:"",
+    dateexpark:"",
       });
       route.push("/company/customer");
     } catch (error) {
@@ -372,7 +388,60 @@ const CustomerForm = ({ params }: { params: Promise<{ id: string }> }) => {
            </div>
         </div>
         {/* Other fields (total, avance, numbheurestotal, numbheureseffectuer) */}
-        
+         {/* date exam code */}
+ <div>
+          <label htmlFor="dateexcode" className="block text-sm font-medium text-gray-700">
+         Date examin code
+          </label>
+          <div className="flex items-center space-x-2">
+          <input
+            type="date"
+            id="dateexcode"
+            name="dateexcode"
+            value={formData.dateexcode||""}
+            onChange={handleChange}
+            placeholder="Enter effect hours"
+            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          />
+          
+           </div>
+        </div>
+         {/* date examin conduit */}
+ <div>
+          <label htmlFor="dateexconduit" className="block text-sm font-medium text-gray-700">
+          Date examin conduit
+          </label>
+          <div className="flex items-center space-x-2">
+          <input
+            type="date"
+            id="dateexconduit"
+            name="dateexconduit"
+            value={formData.dateexconduit||""}
+            onChange={handleChange}
+            placeholder="Enter effect hours"
+            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          />
+           
+           </div>
+        </div>
+         {/* date examin park*/}
+ <div>
+          <label htmlFor="dateexpark" className="block text-sm font-medium text-gray-700">
+          Date examin park
+          </label>
+          <div className="flex items-center space-x-2">
+          <input
+            type="date"
+            id="dateexpark"
+            name="dateexpark"
+            value={formData.dateexpark||""}
+            onChange={handleChange}
+            placeholder="Enter effect hours"
+            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          />
+           
+           </div>
+        </div>
         {/* Submit Button */}
         <div className="mt-6 text-center flex gap-2">
           <Link
