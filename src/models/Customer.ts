@@ -1,44 +1,49 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { ICompany } from "./Company";
-import { IWorker } from "./Worker";
+import CustomerCounter from "./CustomerCounter";
 
 export interface ICustomer extends Document {
-  cin:number;
+  ref: string;
+  cin: number;
   firstname: string;
   lastname: string;
-  phone: string;
+  phone: number;  // Changed to string to allow flexibility
+  address: string;
   company: ICompany | string;
-  activities:string[];
-  total:number;
-  avance:number;
-  worker: (IWorker | string)[];
-  numbheurestotal:number;
-  numbheureseffectuer:number;
-  dateexcode:Date;
-  dateexconduit:Date;
-  dateexpark:Date;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 const CustomerSchema: Schema = new Schema(
   {
-    cin:{type:Number,required:true},
+    ref: { type: String },
+    cin: { type: Number, required: true },
     firstname: { type: String, required: true },
     lastname: { type: String, required: true },
-    phone: { type: Number, required: false },
+    phone: { type: Number, required: false },  // Changed to string
+    address: { type: String, required: false },
     company: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },
-    activities: { type: [String], required: false }, // Optional physical address
-    total:{ type: Number, required: false },
-    avance:{ type: Number, required: false },
-    worker: { type: [mongoose.Schema.Types.ObjectId], ref: "Worker" },
-    numbheurestotal:{ type: Number, required: false },
-    numbheureseffectuer:{ type: Number, required: false },
-    dateexcode:{ type: Date, required: false },
-    dateexconduit:{ type: Date, required: false },
-    dateexpark:{ type: Date, required: false },
   },
   { timestamps: true }
 );
 
-export default mongoose.models.Customer|| mongoose.model<ICustomer>("Customer", CustomerSchema);
+
+
+// Pre-save hook to automatically generate the ref
+CustomerSchema.pre<ICustomer>('save', async function (next) {
+  if (!this.ref) {
+    // Get the counter for "CUST" and increment it
+    const counter = await CustomerCounter.findOneAndUpdate(
+      { name: 'CL' },
+      { $inc: { count: 1 } },
+      { new: true, upsert: true }
+    );
+
+    // Generate ref in the format "CUST-0000001", "CUST-0000002", etc.
+    this.ref = `CL-${counter.count.toString().padStart(7, '0')}`;  // Fixed string interpolation
+  }
+  next();
+});
+const Customer = mongoose.models.Customer || mongoose.model<ICustomer>('Customer', CustomerSchema);
+
+export default Customer;

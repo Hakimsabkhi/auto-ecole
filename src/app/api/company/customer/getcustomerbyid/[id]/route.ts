@@ -34,7 +34,7 @@ export async function GET(
 
     // Connect to the database
     await connectToDatabase();
-    await Worker.find();
+   
     // Authenticate the user
     const result = await getUserFromToken(req);
     if ("error" in result) {
@@ -56,7 +56,7 @@ export async function GET(
     const existingCustomer = await Customer.findOne({
       _id: id,
       company: result.user._id,
-    }).populate("worker", "_id name formateur ");
+    });
     if (!existingCustomer) {
       return NextResponse.json(
         { message: "Customer not found" },

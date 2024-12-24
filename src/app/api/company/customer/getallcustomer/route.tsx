@@ -31,7 +31,6 @@ export async function GET(req: NextRequest) {
     await Worker.find();
 
     const customer = await Customer.find({ company: result.user._id })
-      .populate("worker", "_id name formateur ")
       .sort({ createdAt: -1 }); // Latest created first
 
     if (!customer) {

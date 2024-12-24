@@ -39,15 +39,7 @@ export async function PUT(
       firstname,
       lastname,
       phone,
-      activities,
-      total,
-      avance,
-      worker,
-      numbheurestotal,
-      numbheureseffectuer,
-      dateexcode,
-    dateexconduit,
-    dateexpark,
+      address
     } = await req.json();
     
     // Authenticate the user
@@ -87,33 +79,14 @@ export async function PUT(
     if (lastname != "") {
       existingCustomer.lastname = lastname;
     }
-    if (total != "") {
-      existingCustomer.total = total;
+    if (address != "") {
+      existingCustomer.address = address;
     }
 
     if (phone != null) {
       existingCustomer.phone = Number(phone);
     }
-    if (avance != null) {
-      existingCustomer.avance = Number(avance);
-    }
-    if (numbheurestotal != null) {
-      existingCustomer.numbheurestotal = Number(numbheurestotal);
-    }
-    if (numbheureseffectuer != null) {
-      existingCustomer.numbheureseffectuer = Number(numbheureseffectuer);
-    }
-    if (dateexcode != "") {
-      existingCustomer.dateexcode = dateexcode;
-    }
-    if (dateexconduit != "") {
-      existingCustomer.dateexconduit = dateexconduit;
-    }
-    if (dateexpark != "") {
-      existingCustomer.dateexpark = dateexpark;
-    }
-    existingCustomer.activities = activities;
-    existingCustomer.worker = worker;
+   
     existingCustomer.company = result.user._id;
      await existingCustomer.save();
 

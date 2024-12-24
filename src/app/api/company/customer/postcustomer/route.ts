@@ -34,12 +34,7 @@ export async function POST(req: NextRequest) {
       firstname,
       lastname,
       phone,
-      activities,
-      total,
-      avance,
-      worker,
-      numbheurestotal,
-      numbheureseffectuer,
+      address,
     } = body;
 
     // Validate the input
@@ -48,10 +43,7 @@ export async function POST(req: NextRequest) {
       !firstname ||
       !lastname ||
       !phone ||
-      !activities ||
-      !total ||
-      !worker ||
-      !numbheurestotal
+      !address
     ) {
       return NextResponse.json(
         {
@@ -79,20 +71,16 @@ export async function POST(req: NextRequest) {
     }
 
     // Create the new user
-    await Customer.create({
+    const newCustomer=  new  Customer({
       cin,
       firstname,
       lastname,
       phone,
-      activities,
-      total,
-      avance: Number(avance),
-      worker,
-      numbheurestotal: Number(numbheurestotal),
-      numbheureseffectuer: Number(numbheureseffectuer),
+      address,
       company: result.user._id,
     });
-
+  
+    await newCustomer.save();
     // Respond with the created user's data (excluding the password)
     return NextResponse.json(
       { message: "creating successfully worker" },
