@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/lib/db";
 import { getToken } from "next-auth/jwt";
-import Company from "@/models/Company";
 import Customer from "@/models/Customer";
 import Worker from "@/models/Worker";
 async function getUserFromToken(req: NextRequest) {

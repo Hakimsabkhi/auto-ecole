@@ -16,7 +16,7 @@ interface Customer {
  
 }
 
-const page =({ params }: { params: Promise<{ id: string }> }) => {
+const Customer =({ params }: { params: Promise<{ id: string }> }) => {
   const [unwrappedParams, setUnwrappedParams] = useState<{ id: string } | null>(null);
 
 
@@ -106,4 +106,4 @@ const page =({ params }: { params: Promise<{ id: string }> }) => {
   )
 }
 
-export default page
+export default Customer
