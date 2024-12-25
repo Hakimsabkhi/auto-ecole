@@ -7,11 +7,12 @@ export interface IActivite extends Document {
   ref: string;
   customerid: ICustomer|string;
   activites: string;
-  mt: number;
-  mp: number;  // Changed to string to allow flexibility
-  nht: number;
-  nhe: number;
+  mt: string;
+  mp: string;  // Changed to string to allow flexibility
+  nht: string;
+  nhe: string;
   dateexam: Date;
+  status:string;
   company: ICompany | string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -19,14 +20,14 @@ export interface IActivite extends Document {
 
 const ActiviteSchema: Schema = new Schema(
   {
-    ref: { type: String,required: false },
-    customerid: { type: mongoose.Schema.Types.ObjectId, ref: "Customer" },
+    ref: { type: String},
     activites: { type: String, required: true },
-    mt: {type: Number,required: false },
-    mp: {type: Number,required: false },  // Changed to string to allow flexibility
-    nht: {type: Number,required: false },
-    nhe: {type: Number,required: false },
+    mt: {type: String,required: false },
+    mp: {type: String,required: false },  // Changed to string to allow flexibility
+    nht: {type: String,required: false },
+    nhe: {type: String,required: false },
     dateexam: {type: Date,required: false },
+    status:{type:String,default:"en-coure"},
     company: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },
   },
   { timestamps: true }
@@ -44,11 +45,9 @@ ActiviteSchema.pre<IActivite>('save', async function (next) {
       { new: true, upsert: true }
     );
 
-    // Generate ref in the format "CUST-0000001", "CUST-0000002", etc.
+    // Generate ref in the format "AN-0000001", "AN-0000002", etc.
     this.ref = `AN-${counter.count.toString().padStart(7, '0')}`;  // Fixed string interpolation
   }
   next();
 });
-const Activite = mongoose.models.Activite || mongoose.model<IActivite>('Activite', ActiviteSchema);
-
-export default Activite;
+export default mongoose.models.Activite || mongoose.model<IActivite>('Activite', ActiviteSchema);

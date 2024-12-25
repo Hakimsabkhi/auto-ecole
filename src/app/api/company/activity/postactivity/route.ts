@@ -71,21 +71,20 @@ export async function POST(req: NextRequest) {
         { status: 405 }
       );
     }
-    
 
-    // Create the new user
-    const newActivite=  new  Activite({
-        customerid:existingCustomer,
-      activities,
-      mt:Number(mt),
-      mp:Number(mp),
-      nht:Number(nht),
-      nhe:Number(nhe),
+    await Activite.create({
+      customerid: existingCustomer,
+      activites:activities, // Make sure this matches the schema as "activites"
+      mt,
+      mp,
+      nht,
+      nhe,
       dateexam,
       company: result.user._id,
     });
+    
 
-    await newActivite.save(); 
+ 
 
     // Respond with the created user's data (excluding the password)
     return NextResponse.json(

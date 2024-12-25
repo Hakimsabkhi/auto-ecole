@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
 interface Customer {
@@ -10,7 +11,7 @@ interface Customer {
 }
 
 const ActivitiesForm: React.FC = () => {
-
+ const route= useRouter();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [customer, setCustomer] = useState<string>("");
  const [searchTerm, setSearchTerm] = useState('');
@@ -110,7 +111,17 @@ const ActivitiesForm: React.FC = () => {
 
       const result = await response.json();
       console.log("Form submitted successfully", result);
-     
+     setFormData({
+        customerid: "",
+        activities: "",
+        mt: 0,
+        mp: 0,
+        nht: 0,
+        nhe: 0,
+        dateexam: "",
+      });
+      route.push('/company/activitie');
+    
     } catch (err) {
       console.error("Error submitting form:", err);
       alert("An error occurred while submitting the form.");
