@@ -123,12 +123,18 @@ const ActiviteTable: React.FC = () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-semibold mb-4">Activite Table</h1>
-      <div className="flex w-full justify-end pb-4">
+      <div className="flex w-full justify-end  gap-2 pb-4">
         <Link
           href={"/company/activitie/addactivitie"}
           className="bg-gray-800 p-4 rounded-md text-white"
         >
           Create Activite
+        </Link>
+        <Link
+          href={"/company/activitie/prixactivite/"}
+          className="bg-gray-800 p-4 rounded-md text-white"
+        >
+          List prix Activite
         </Link>
       </div>
       <table className="w-full border-collapse border border-gray-200 uppercase">

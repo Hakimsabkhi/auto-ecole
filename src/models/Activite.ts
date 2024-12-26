@@ -39,9 +39,10 @@ const ActiviteSchema: Schema = new Schema(
 // Pre-save hook to automatically generate the ref
 ActiviteSchema.pre<IActivite>('save', async function (next) {
   if (!this.ref) {
-    // Get the counter for "AN" and increment it
+   // Define the filter condition for the counter, including the company
+   const filter = { name: 'AN', company: this.company };
     const counter = await ActiviteCounter.findOneAndUpdate(
-      { name: 'AN' },
+       filter ,
       { $inc: { count: 1 } },
       { new: true, upsert: true }
     );

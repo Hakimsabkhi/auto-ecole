@@ -32,18 +32,22 @@ const CustomerSchema: Schema = new Schema(
 // Pre-save hook to automatically generate the ref
 CustomerSchema.pre<ICustomer>('save', async function (next) {
   if (!this.ref) {
-    // Get the counter for "CUST" and increment it
+    // Define the filter condition for the counter, including the company
+    const filter = { name: 'CL', company: this.company };
+
+    // Get the counter for "CL" and increment it, ensuring company is included in the filter
     const counter = await CustomerCounter.findOneAndUpdate(
-      { name: 'CL' },
-      { $inc: { count: 1 } },
-      { new: true, upsert: true }
+      filter, // Filter for company and 'CL' counter
+      { $inc: { count: 1 } }, // Increment the counter
+      { new: true, upsert: true } // Return the updated counter and create one if it doesn't exist
     );
 
-    // Generate ref in the format "CUST-0000001", "CUST-0000002", etc.
-    this.ref = `CL-${counter.count.toString().padStart(7, '0')}`;  // Fixed string interpolation
+    // Generate ref in the format "CL-0000001", "CL-0000002", etc.
+    this.ref = `CL-${counter.count.toString().padStart(7, '0')}`;
   }
   next();
 });
+
 const Customer = mongoose.models.Customer || mongoose.model<ICustomer>('Customer', CustomerSchema);
 
 export default Customer;
