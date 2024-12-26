@@ -29,7 +29,10 @@ export async function GET(req: NextRequest) {
       );
     }
     await Customer.find();
-    const activite = await Activite.find({ company: result.user._id }).populate('Customer');
+    const activite = await Activite.find({ company: result.user._id })
+    .populate('customer')  // Ensure 'Customer' is the correct field name in the schema
+    .exec();  // Adding .exec() is optional, but it explicitly returns a promise
+  
     if (!activite) {
       return NextResponse.json({ message: "no data" }, { status: 501 });
     }

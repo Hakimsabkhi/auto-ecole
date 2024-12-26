@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-
+import { formatDate } from '@/lib/timeforma';
 interface Customer {
   _id: string;
   ref:string;
@@ -10,13 +10,42 @@ interface Customer {
   lastname:string;
 }
 
-const ActivitiesForm: React.FC = () => {
+const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) => {
+    const [unwrappedParams, setUnwrappedParams] = useState<{ id: string } | null>(null);
  const route= useRouter();
   const [customers, setCustomers] = useState<Customer[]>([]);
  const [searchTerm, setSearchTerm] = useState('');
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
   const [OpenCustomer,setOpenCustomer]=useState<boolean>(false);
+  
+  const [formData, setFormData] = useState({
+    customer: "",
+    activities: "",
+    mt: 0,
+    mp: 0,
+    nht: 0,
+    nhe: 0,
+    dateexam: "",
+  });
+ 
+   useEffect(() => {
+  
+      const fetchParams = async () => {
+        try {
+          const unwrapped = await params; 
 
+          setUnwrappedParams(unwrapped);
+        } catch (error) {
+          console.error("Error unwrapping params:", error);
+        }
+      };
+  
+      fetchParams();
+    }, [params]);
+
+ 
+  
+  
   const fetchCustomers = async () => {
     try {
       const response = await fetch("/api/company/customer/getallcustomer");
@@ -39,18 +68,43 @@ const ActivitiesForm: React.FC = () => {
 
   // Fetch customers on initial render
   useEffect(() => {
+    
     fetchCustomers();
-  }, []);
+    if (unwrappedParams?.id) {
+      console.log(unwrappedParams)   
+ const fetchActivity= async () => {
+    try {
+      const response = await fetch(`/api/company/activity/getactivity/${unwrappedParams?.id}`);
 
-  const [formData, setFormData] = useState({
-    customer: "",
-    activities: "",
-    mt: 0,
-    mp: 0,
-    nht: 0,
-    nhe: 0,
-    dateexam: "",
-  });
+      if (!response.ok) {
+        throw new Error("Failed to fetch workers");
+      }
+
+      const {existingaActivite} = await response.json(); // Update state with fetched data
+
+      setFormData({
+        customer: existingaActivite.customer._id,
+        activities: existingaActivite.activites,
+        mt: existingaActivite.mt,
+        mp: existingaActivite.mp,
+        nht: existingaActivite.nht,
+        nhe: existingaActivite.nhe,
+        dateexam:formatDate(existingaActivite.dateexam),
+      });
+      setSearchTerm(existingaActivite.customer.firstname)
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error("An unknown error occurred");
+      }
+    }
+  }
+  
+    fetchActivity();
+}
+  }, [unwrappedParams]);
+
 
   const options: string[] = ["Code", "Conuit", "Parking"];
 
@@ -85,18 +139,15 @@ const ActivitiesForm: React.FC = () => {
     setSearchTerm(firstname);  // Set the search term to the selected username
     setFormData({ ...formData, customer: customer });
   };
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.customer|| !formData.activities || !formData.mt  || !formData.nht ) {
-      alert('Please fill in all fields');
-      return;
-    }
+  
 
     // Submit form data to the API or handle as needed
     try {
-      const response = await fetch('/api/company/activity/postactivity', {
-        method: 'POST',
+      const response = await fetch(`/api/company/activity/updateactivity/${unwrappedParams?.id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -107,7 +158,7 @@ const ActivitiesForm: React.FC = () => {
         throw new Error("Failed to submit activity form");
       }
 
-    
+   
      setFormData({
         customer: "",
         activities: "",
@@ -127,8 +178,8 @@ const ActivitiesForm: React.FC = () => {
 
   return (
     <div className="p-4 w-full bg-white rounded-lg shadow-lg">
-      <h2 className="text-xl font-semibold text-center mb-6">Activity Form</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <h2 className="text-xl font-semibold text-center mb-6">Update Activity</h2>
+      <form onSubmit={handleUpdate} className="space-y-4">
       <div className="space-y-4">
         {/* Search Input */}
         <div>
@@ -224,7 +275,7 @@ const ActivitiesForm: React.FC = () => {
 
         <div>
           <label htmlFor="nhe" className="block text-sm font-medium text-gray-700">
-            Nombre D&apos;heures effecture
+            Nombre d&apos;heures effecture
           </label>
           <input
             id="nhe"
@@ -254,7 +305,7 @@ const ActivitiesForm: React.FC = () => {
             type="submit"
           className="w-full bg-gray-900 hover:bg-gray-700 text-white py-2 rounded-md"
         >
-          Generate Activities
+          Update Activities
         </button>
       </div>
       </form>
@@ -262,4 +313,4 @@ const ActivitiesForm: React.FC = () => {
   );
 };
 
-export default ActivitiesForm;
+export default ActivitiesFormupdate;

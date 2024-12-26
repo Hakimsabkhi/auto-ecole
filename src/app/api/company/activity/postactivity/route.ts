@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     const {
-        customerid,
+        customer,
         activities,
         mt,
         mp,
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
  
     // Validate the input
     if (
-      !customerid ||
+      !customer ||
       !activities ||
       !mt ||
       !nht
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
     // Check if the cin company already exists in Customer
    
     const existingCustomer = await Customer.findById({
-     _id: customerid
+     _id: customer
       });
     if (!existingCustomer) {
       return NextResponse.json(
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
     }
 
     await Activite.create({
-      customerid: existingCustomer,
+      customer: existingCustomer,
       activites:activities, // Make sure this matches the schema as "activites"
       mt,
       mp,
@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
       { message: "creating successfully Activity" },
       { status: 201 }
     );
-  } catch (error) {
+  } catch {
   
     return NextResponse.json(
       { error: "Something went wrong" },

@@ -5,7 +5,7 @@ import { ICustomer } from "./Customer";
 
 export interface IActivite extends Document {
   ref: string;
-  customerid: ICustomer|string;
+  customer: ICustomer|string;
   activites: string;
   mt: string;
   mp: string;  // Changed to string to allow flexibility
@@ -21,7 +21,7 @@ export interface IActivite extends Document {
 const ActiviteSchema: Schema = new Schema(
   {
     ref: { type: String},
-    customerid: {type:mongoose.Schema.Types.ObjectId,ref:'Customer'},
+    customer: {type:mongoose.Schema.Types.ObjectId,ref:'Customer'},
     activites: { type: String, required: true },
     mt: {type: String,required: false },
     mp: {type: String,required: false },  // Changed to string to allow flexibility

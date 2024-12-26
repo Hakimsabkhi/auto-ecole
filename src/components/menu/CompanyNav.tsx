@@ -2,6 +2,7 @@
 import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 import React from 'react'
+import { IoListCircle } from 'react-icons/io5'
 
 
 const CompanyNav = () => {
@@ -49,6 +50,17 @@ const CompanyNav = () => {
             <span>List Customer</span>
           </Link>
         </li>
+
+        <li>
+          <Link href={"/company/activitie"}
+            className="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+
+             <IoListCircle className='w-[25px] h-[25px] mr-4'/>
+            <span>List activitie</span>
+          </Link>
+        </li>
+
+        
         <li>
           <a
             className="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
