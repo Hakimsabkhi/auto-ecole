@@ -87,20 +87,20 @@ const CustomerTable: React.FC = () => {
   
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-semibold mb-4">Customer Table</h1>
+      <h1 className="text-2xl font-semibold mb-4"> Table Client</h1>
       <div className="flex w-full justify-end pb-4">
         <Link
           href={"/company/customer/addcustomer"}
           className="bg-gray-800 p-4 rounded-md text-white"
         >
-          Create Customer
+          Ajouter un client
         </Link>
       </div>
       <table className="w-full border-collapse border border-gray-200 uppercase">
         <thead>
           <tr className="bg-gray-100">
           <th className="px-4 py-2 text-left font-medium text-gray-600">
-              REF Client
+             RÉFÉRENCE
             </th>
             <th className="px-4 py-2 text-left font-medium text-gray-600">
               Nom
@@ -113,7 +113,7 @@ const CustomerTable: React.FC = () => {
             </th>
             
             <th className="px-4 py-2 text-left font-medium text-gray-600">
-              Phone
+              Telephone
             </th>
             <th className="px-4 py-2 text-left font-medium text-gray-600">
              address

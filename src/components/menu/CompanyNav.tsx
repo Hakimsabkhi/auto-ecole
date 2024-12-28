@@ -47,7 +47,7 @@ const CompanyNav = () => {
                 data-original="#000000" />
             </svg>
              
-            <span>List Customer</span>
+            <span>List Cilent</span>
           </Link>
         </li>
 

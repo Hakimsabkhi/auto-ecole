@@ -114,7 +114,7 @@ const CustomerForm = ({ params }: { params: Promise<{ id: string }> }) => {
  
   return (
     <div className="bg-white p-6 rounded-lg shadow-md w-full">
-      <h2 className="text-2xl font-semibold text-center mb-4">Customer Update</h2>
+      <h2 className="text-2xl font-semibold text-center mb-4"> Modifier des informations client</h2>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
         {/* Input fields for cin, firstname, lastname, phone */}
@@ -135,7 +135,7 @@ const CustomerForm = ({ params }: { params: Promise<{ id: string }> }) => {
         </div>
         <div>
           <label htmlFor="firstname" className="block text-sm font-medium text-gray-700">
-            First Name
+            Nom
           </label>
           <input
             type="text"
@@ -143,14 +143,14 @@ const CustomerForm = ({ params }: { params: Promise<{ id: string }> }) => {
             name="firstname"
             value={formData.firstname}
             onChange={handleChange}
-            placeholder="Enter first name"
+            placeholder="Enter le nom"
             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             required
           />
         </div>
         <div>
           <label htmlFor="lastname" className="block text-sm font-medium text-gray-700">
-            Last Name
+            Prenom
           </label>
           <input
             type="text"
@@ -158,14 +158,14 @@ const CustomerForm = ({ params }: { params: Promise<{ id: string }> }) => {
             name="lastname"
             value={formData.lastname}
             onChange={handleChange}
-            placeholder="Enter last name"
+            placeholder="Enter le prenom"
             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             required
           />
         </div>
         <div>
           <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-            Phone
+            Telephone
           </label>
           <input
             type="text" // Changed to text to handle the phone number input as string
@@ -173,7 +173,7 @@ const CustomerForm = ({ params }: { params: Promise<{ id: string }> }) => {
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            placeholder="Enter 8-digit phone number"
+            placeholder="Enter 8-digit numero telephone"
             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             required
           />
@@ -204,13 +204,13 @@ const CustomerForm = ({ params }: { params: Promise<{ id: string }> }) => {
             href="/company/customer"
             className="w-full py-3 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-400 transition duration-200"
           >
-            Cancel
+            Annuler
           </Link>
           <button
             type="submit"
             className="w-full py-3 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-700 transition duration-200"
           >
-            Update
+            Sauvegarder Modification
           </button>
         </div>
       </form>
