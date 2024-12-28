@@ -11,7 +11,7 @@ interface Worker {
   name: string;
   username: string;
   phone: string;
-  formateur:string;
+  formateur:string[];
 }
 
 const Page = () => {
@@ -86,19 +86,19 @@ const Page = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-semibold mb-4">Worker Table</h1>
+      <h1 className="text-2xl font-semibold mb-4"> Table Moniteur / Monitrice</h1>
       <div className="flex w-full justify-end pb-4">
         <Link href={'/company/worker/addworker'} className="bg-gray-800 p-4 rounded-md text-white">
-          Create Worker
+          Ajouter Moniteur / Monitrice
         </Link>
       </div>
 
       <table className="min-w-full table-auto border-collapse border border-gray-200 uppercase">
         <thead>
           <tr className="bg-gray-100">
-            <th className="px-4 py-2 text-left font-medium text-gray-600">Name</th>
+            <th className="px-4 py-2 text-left font-medium text-gray-600">Nom et Prenom</th>
             <th className="px-4 py-2 text-left font-medium text-gray-600">Username</th>
-            <th className="px-4 py-2 text-left font-medium text-gray-600">Phone</th>
+            <th className="px-4 py-2 text-left font-medium text-gray-600">Telephone</th>
             <th className="px-4 py-2 text-left font-medium text-gray-600">Formateur</th>
             <th className="px-4 py-2 text-left font-medium text-gray-600">Action</th>
           </tr>
@@ -109,7 +109,11 @@ const Page = () => {
               <td className="px-4 py-2">{worker.name}</td>
               <td className="px-4 py-2">{worker.username}</td>
               <td className="px-4 py-2">{worker.phone}</td>
-              <td className="px-4 py-2">{worker.formateur}</td>
+              <td className="px-4 py-2">{worker.formateur.map((name, index) => (
+      <span key={index} className="block">
+        {name}
+      </span>
+    ))}</td>
               <td className="px-4 py-2">
                 <div className="p-2 flex gap-2">
                   <Link
