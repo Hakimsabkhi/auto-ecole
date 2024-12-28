@@ -71,7 +71,7 @@ const Page = () => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md w-full">
       <h2 className="text-2xl font-semibold text-center mb-4">
-      Add Information Moniteur / Monitrice d'auto-école 
+      Ajouter Information Moniteur / Monitrice d'auto-école 
            </h2>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
