@@ -9,13 +9,38 @@ interface Customer {
   firstname: string;
   lastname:string;
 }
-
+interface Worker {
+  _id: string;
+  name: string;
+  formateur: string[];
+}
 const ActivitiesForm: React.FC = () => {
  const route= useRouter();
   const [customers, setCustomers] = useState<Customer[]>([]);
  const [searchTerm, setSearchTerm] = useState('');
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
   const [OpenCustomer,setOpenCustomer]=useState<boolean>(false);
+  const [workers, setWorkers] = useState<Worker[]>([]);
+
+  const fetchWorkers = async () => {
+    try {
+      const response = await fetch('/api/company/worker/getworkerbycompany');
+      if (!response.ok) {
+        throw new Error('Failed to fetch workers');
+      }
+
+      const data = await response.json();
+      setWorkers(data); // Update state with fetched data
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error('An unknown error occurred');
+      }
+    }
+  };
+
+  // Fetch workers on initial render
 
   const fetchCustomers = async () => {
     try {
@@ -40,6 +65,7 @@ const ActivitiesForm: React.FC = () => {
   // Fetch customers on initial render
   useEffect(() => {
     fetchCustomers();
+    fetchWorkers();
   }, []);
 
   const [formData, setFormData] = useState({
@@ -50,6 +76,7 @@ const ActivitiesForm: React.FC = () => {
     nht: 0,
     nhe: 0,
     dateexam: "",
+    worker:"",
   });
 
   const options: string[] = ["Code", "Conuit", "Parking"];
@@ -65,7 +92,7 @@ const ActivitiesForm: React.FC = () => {
       [name]: name === 'mt' || name === 'mp' || name === 'nht' || name === 'nhe' ? parseFloat(value) : value,
     });
   };
-  
+    
 
   const handleSearchCustomers = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase();
@@ -116,6 +143,7 @@ const ActivitiesForm: React.FC = () => {
         nht: 0,
         nhe: 0,
         dateexam: "",
+        worker:""
       });
       route.push('/company/activitie');
     
@@ -193,7 +221,30 @@ const ActivitiesForm: React.FC = () => {
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
           />
         </div>
+   {/* Worker Selection (Div-based) */}
+   <div>
+     <label htmlFor="worker" className="block text-sm font-medium text-gray-700 pb-1">
+            Moniteur
+          </label>
+     <div className="grid grid-cols-8 gap-2">
+     <select 
+      id="worker"
+      name="worker"
+      value={formData.worker}
+      onChange={handleChange}
+      className="mt-1 block w-full px-3 py-2 border bg-transparent border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+     >
+      <option value='' disabled  selected> Select Moniteur</option>
+  {workers.map((worker) => (
+   <option key={worker._id} value={worker.name}>
+   {worker.name} - {worker.formateur.join(", ")}
+ </option>
+ 
+  ))}
+</select>
 
+        </div>
+        </div>
         <div>
           <label htmlFor="mp" className="block text-sm font-medium text-gray-700">
             Montant Payer

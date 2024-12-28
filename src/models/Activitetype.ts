@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 import { ICompany } from "./Company";
 
-interface IActiviteType extends Document {
+export  interface IActiviteType extends Document {
   name: string;
   prix: number;
   company:ICompany|string;
@@ -13,5 +13,5 @@ const ActiviteTypeSchema = new Schema<IActiviteType>({
   company: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },
 });
 
-const ActiviteType = mongoose.models.ActiviteType || mongoose.model<IActiviteType>('ActiviteType', ActiviteTypeSchema);
-export default ActiviteType;
+
+export default mongoose.models.ActiviteType || mongoose.model<IActiviteType>("ActiviteType", ActiviteTypeSchema);

@@ -4,11 +4,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+interface ActivityType {
+  _id: string;
+  name: string;
+}
+
 const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
-  const [unwrappedParams, setUnwrappedParams] = useState<{ id: string } | null>(
-    null
-  );
-  const predefinedActivities = ["Code", "Conduit", "Parking"];
+  const [unwrappedParams, setUnwrappedParams] = useState<{ id: string } | null>(null);
+  const [predefinedActivities, setPredefinedActivities] = useState<ActivityType[]>([]);
   const route = useRouter();
 
   const [formData, setFormData] = useState({
@@ -16,14 +19,15 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
     username: "",
     phone: "",
     password: "",
-    formateur: [] as string[],
+    formateur: [] as ActivityType[],
   });
 
+  // Unwrap params on mount
   useEffect(() => {
     const fetchParams = async () => {
       try {
-        const unwrapped = await params; // Unwrap the Promise
-        setUnwrappedParams(unwrapped); // Store unwrapped params
+        const unwrapped = await params;
+        setUnwrappedParams(unwrapped);
       } catch (error) {
         console.error("Error unwrapping params:", error);
       }
@@ -32,6 +36,34 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
     fetchParams();
   }, [params]);
 
+  // Fetch activities
+  const fetchActivityType = async () => {
+    try {
+      const response = await fetch("/api/company/activity/type/getalltype", {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch activities");
+      }
+
+      const data = await response.json();
+      setPredefinedActivities(data);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error("An unknown error occurred");
+      }
+    }
+  };
+
+  // Fetch predefined activities on initial render
+  useEffect(() => {
+    fetchActivityType();
+  }, []);
+
+  // Fetch worker data when params.id is available
   useEffect(() => {
     if (unwrappedParams?.id) {
       const fetchWorker = async () => {
@@ -49,7 +81,7 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
             formateur: existingWorker.formateur || [],
           });
         } catch (error) {
-          console.error("Error fetching company data:", error);
+          console.error("Error fetching worker data:", error);
         }
       };
 
@@ -57,9 +89,8 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
     }
   }, [unwrappedParams?.id]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  // Handle input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -67,22 +98,25 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
     }));
   };
 
-  const handleAddFormateur = (formateur: string) => {
-    if (formateur && !formData.formateur.includes(formateur)) {
+  // Add formateur
+  const handleAddFormateur = (activity: ActivityType) => {
+    if (activity && !formData.formateur.includes(activity)) {
       setFormData((prev) => ({
         ...prev,
-        formateur: [...prev.formateur, formateur],
+        formateur: [...prev.formateur, activity],
       }));
     }
   };
 
-  const handleRemoveFormateur = (formateur: string) => {
+  // Remove formateur
+  const handleRemoveFormateur = (activity: ActivityType) => {
     setFormData((prev) => ({
       ...prev,
-      formateur: prev.formateur.filter((item) => item !== formateur),
+      formateur: prev.formateur.filter((act) => act !== activity),
     }));
   };
 
+  // Submit form data
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -100,6 +134,7 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
         throw new Error("Failed to update worker");
       }
 
+      // Reset form data after successful update
       setFormData({
         name: "",
         username: "",
@@ -117,15 +152,12 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md w-full">
       <h2 className="text-2xl font-semibold text-center mb-4">
-      Modifier des informations Moniteur / Monitrice d'auto-école
+        Modifier des informations Moniteur / Monitrice d'auto-école
       </h2>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
             Nom et Prenom:
           </label>
           <input
@@ -140,10 +172,7 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
         </div>
 
         <div>
-          <label
-            htmlFor="username"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="username" className="block text-sm font-medium text-gray-700">
             Username:
           </label>
           <input
@@ -158,10 +187,7 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
         </div>
 
         <div>
-          <label
-            htmlFor="phone"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
             Telephone:
           </label>
           <input
@@ -184,7 +210,7 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
             {predefinedActivities.map((activity) => (
               <button
                 type="button"
-                key={activity}
+                key={activity._id}
                 onClick={() => handleAddFormateur(activity)}
                 className={`px-4 py-2 border rounded-md text-sm ${
                   formData.formateur.includes(activity)
@@ -192,7 +218,7 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
                     : "bg-gray-200 text-gray-700"
                 } hover:bg-blue-100`}
               >
-                {activity}
+                {activity.name}
               </button>
             ))}
           </div>
@@ -203,7 +229,7 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
                 key={index}
                 className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full flex items-center space-x-2"
               >
-                <span>{activity}</span>
+                <span>{activity.name}</span>
                 <button
                   type="button"
                   onClick={() => handleRemoveFormateur(activity)}
@@ -217,10 +243,7 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
         </div>
 
         <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
             Mot de passe:
           </label>
           <input

@@ -3,6 +3,7 @@ import connectToDatabase from '@/lib/db';
 import { getToken } from 'next-auth/jwt';
 import Company from '@/models/Company';
 import Worker from '@/models/Worker';
+import Activitetype from '@/models/Activitetype';
 
 async function getUserFromToken(req: NextRequest) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
@@ -26,10 +27,10 @@ try{
     if ('error' in result) {
       return NextResponse.json({ error: result.error }, { status: result.status });
     }
-    
-   
-      const worker = await Worker.find({ company: result.user._id}).sort({ createdAt: -1 }); // Latest created first
      
+    await Activitetype.find();
+   
+      const worker = await Worker.find({ company: result.user._id}).populate('formateur').sort({ createdAt: -1 }); // Latest created first
     if(!worker){
       return NextResponse.json({ message: 'no data' }, { status: 501 });
     }
