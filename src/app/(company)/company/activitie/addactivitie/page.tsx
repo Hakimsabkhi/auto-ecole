@@ -14,14 +14,44 @@ interface Worker {
   name: string;
   formateur: string[];
 }
+interface Activitetype {
+  _id:string;
+  name:string,
+  
+}
 const ActivitiesForm: React.FC = () => {
  const route= useRouter();
+ const [options,setOptions]=useState<Activitetype[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
  const [searchTerm, setSearchTerm] = useState('');
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
   const [OpenCustomer,setOpenCustomer]=useState<boolean>(false);
   const [workers, setWorkers] = useState<Worker[]>([]);
+ const fetchActivitytype= async () => {
+    try {
+      const response = await fetch("/api/company/activity/type/getalltype", {
+        method: 'GET'})
 
+      if (!response.ok) {
+        throw new Error("Failed to fetch workers");
+      }
+
+      const data = await response.json();
+      setOptions(data); // Update state with fetched data
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error("An unknown error occurred");
+      }
+    }
+  };
+ 
+  
+  // Fetch workers on initial render
+  useEffect(() => {
+    fetchActivitytype();
+  }, []);
   const fetchWorkers = async () => {
     try {
       const response = await fetch('/api/company/worker/getworkerbycompany');
@@ -79,7 +109,7 @@ const ActivitiesForm: React.FC = () => {
     worker:"",
   });
 
-  const options: string[] = ["Code", "Conuit", "Parking"];
+  
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -201,8 +231,8 @@ const ActivitiesForm: React.FC = () => {
               Select Activity
             </option>
             {options.map((option, index) => (
-              <option key={index} value={option}>
-                {option}
+              <option key={index} value={option._id}>
+                {option.name}
               </option>
             ))}
           </select>
