@@ -4,6 +4,8 @@ import { getToken } from "next-auth/jwt";
 import Company from "@/models/Company";
 import Activite from "@/models/Activite";
 import Customer from "@/models/Customer";
+import Activitetype from "@/models/Activitetype";
+import Worker from "@/models/Worker";
 
 async function getUserFromToken(req: NextRequest) {
   try {
@@ -54,17 +56,19 @@ export async function GET(
     }
     await Customer.find();
     // Check if the subscription exists
+    await Activitetype.find();
+    await Worker.find();
     const existingaActivite = await Activite.findOne({
       _id: id,
       company: result.user._id,
-    }).populate("customer");
+    }).populate("customer").populate('activites').populate('worker','_id name') ;
     if (!existingaActivite) {
       return NextResponse.json(
         { message: "Customer not found" },
         { status: 404 }
       );
     }
-console.log(existingaActivite)
+
     // Return success response
     return NextResponse.json({ existingaActivite }, { status: 200 });
   } catch (error) {

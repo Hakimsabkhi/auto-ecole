@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { formatDate } from '@/lib/timeforma';
+import Link from 'next/link';
 interface Customer {
   _id: string;
   ref:string;
@@ -10,6 +11,16 @@ interface Customer {
   lastname:string;
 }
 
+interface Worker {
+  _id: string;
+  name: string;
+  formateur: Activitetype[];
+}
+
+interface Activitetype {
+  _id: string;
+  name: string;
+}
 const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) => {
     const [unwrappedParams, setUnwrappedParams] = useState<{ id: string } | null>(null);
  const route= useRouter();
@@ -17,7 +28,8 @@ const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) =>
  const [searchTerm, setSearchTerm] = useState('');
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
   const [OpenCustomer,setOpenCustomer]=useState<boolean>(false);
-  
+    const [options, setOptions] = useState<Activitetype[]>([]);
+   const [workers, setWorkers] = useState<Worker[]>([]);
   const [formData, setFormData] = useState({
     customer: "",
     activities: "",
@@ -26,6 +38,7 @@ const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) =>
     nht: 0,
     nhe: 0,
     dateexam: "",
+    worker:"",
   });
  
    useEffect(() => {
@@ -65,7 +78,26 @@ const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) =>
       }
     }
   };
+  const fetchActivitytype = async () => {
+    try {
+      const response = await fetch("/api/company/activity/type/getalltype", {
+        method: "GET",
+      });
 
+      if (!response.ok) {
+        throw new Error("Failed to fetch workers");
+      }
+
+      const data = await response.json();
+      setOptions(data); // Update state with fetched data
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error("An unknown error occurred");
+      }
+    }
+  };
   // Fetch customers on initial render
   useEffect(() => {
     
@@ -89,9 +121,12 @@ const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) =>
         mp: existingaActivite.mp,
         nht: existingaActivite.nht,
         nhe: existingaActivite.nhe,
-        dateexam:formatDate(existingaActivite.dateexam),
+        dateexam:formatDate(existingaActivite.dateexam), 
+        worker:existingaActivite.worker,
       });
       setSearchTerm(existingaActivite.customer.firstname)
+      henderworkerchange( existingaActivite.activites._id)
+      fetchActivitytype()
     } catch (err: unknown) {
       if (err instanceof Error) {
         console.error(err.message);
@@ -102,24 +137,51 @@ const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) =>
   }
   
     fetchActivity();
+  
 }
   }, [unwrappedParams]);
 
+  async function henderworkerchange(id:string){
+  try {
+    const response = await fetch(
+      `/api/company/worker/getworkerbyactivite/${id}`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch workers");
+    }
 
-  const options: string[] = ["Code", "Conuit", "Parking"];
+    const { existingWorker } = await response.json();
+    setWorkers(existingWorker);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    } else {
+      console.error("An unknown error occurred");
+    }
+  }
+};
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-
-    // Handle number fields separately to parse values correctly
-    setFormData({
-      ...formData,
-      [name]: name === 'mt' || name === 'mp' || name === 'nht' || name === 'nhe' ? parseFloat(value) : value,
-    });
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: ["mt", "mp", "nht", "nhe"].includes(name) ? parseFloat(value) : value,
+    }));
   };
-  
+
+  const handleChangeactivities = async (
+      e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
+      
+      // Handle number fields separately to parse values correctly
+      const { name, value } = e.target;
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: ["mt", "mp", "nht", "nhe"].includes(name) ? parseFloat(value) : value,
+      }));
+      henderworkerchange(value)
+    };
 
   const handleSearchCustomers = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase();
@@ -167,6 +229,7 @@ const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) =>
         nht: 0,
         nhe: 0,
         dateexam: "",
+        worker:""
       });
       route.push('/company/activitie');
     
@@ -217,20 +280,47 @@ const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) =>
             id="activities"
             name="activities"
             value={formData.activities}
-            onChange={handleChange}
+            onChange={handleChangeactivities}
             className="mt-1 block w-full px-3 py-2 border bg-transparent border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           >
             <option value="" disabled>
               Select Activity
             </option>
             {options.map((option, index) => (
-              <option key={index} value={option}>
-                {option}
+              <option key={index} value={option._id}>
+                {option.name}
               </option>
             ))}
           </select>
         </div>
+   {/* Worker Selection (Div-based) */}
+   <div>
+            <label
+              htmlFor="worker"
+              className="block text-sm font-medium text-gray-700 pb-1"
+            >
+              Moniteur
+            </label>
 
+            <select
+              id="worker"
+              name="worker"
+              value={formData.worker}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 border bg-transparent border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="" disabled>
+                {" "}
+                Select Moniteur
+              </option>
+              {workers.map((worker, index) => (
+                <option key={index} value={worker._id}>
+                  {worker.name} -{" "}
+                  {worker.formateur.map((item) => item.name).join(", ")}
+                </option>
+              ))}
+            </select>
+          </div>
         <div>
           <label htmlFor="mt" className="block text-sm font-medium text-gray-700">
             Montant Total
@@ -300,13 +390,20 @@ const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) =>
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
           />
         </div>
-
+              <div className='grid grid-rows-1 gap-2'>
         <button
             type="submit"
           className="w-full bg-gray-900 hover:bg-gray-700 text-white py-2 rounded-md"
         >
           Update Activities
         </button>
+        <Link 
+            href={"/company/activitie"}
+          className="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 rounded-md flex justify-center"
+        >
+          Retour
+        </Link>
+        </div>
       </div>
       </form>
     </div>

@@ -4,6 +4,7 @@ import { getToken } from "next-auth/jwt";
 import Company from "@/models/Company";
 import Customer from "@/models/Customer";
 import Activite from "@/models/Activite";
+import Activitetype from "@/models/Activitetype";
 async function getUserFromToken(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   if (!token) {
@@ -29,8 +30,11 @@ export async function GET(req: NextRequest) {
       );
     }
     await Customer.find();
+    await Activitetype.find();
     const activite = await Activite.find({ company: result.user._id })
-    .populate('customer')  // Ensure 'Customer' is the correct field name in the schema
+    .populate('customer') 
+    .populate('activites') 
+    .populate('worker')// Ensure 'Customer' is the correct field name in the schema
     .exec();  // Adding .exec() is optional, but it explicitly returns a promise
   
     if (!activite) {

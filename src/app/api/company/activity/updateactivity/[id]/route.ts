@@ -4,6 +4,8 @@ import { getToken } from "next-auth/jwt";
 import Company from "@/models/Company";
 import Activite from "@/models/Activite";
 import Customer from "@/models/Customer";
+import Activitetype from "@/models/Activitetype";
+import Worker from "@/models/Worker";
 
 async function getUserFromToken(req: NextRequest) {
   try {
@@ -45,9 +47,12 @@ export async function PUT(
       );
     }
     const body = await req.json();
+    console.log(body);
+    
     const {
         customer,
         activities,
+        worker,
         mt,
         mp,
         nht,
@@ -56,7 +61,7 @@ export async function PUT(
     } = body;
  
     // Validate the provided ID
-    if (!id) {
+ if (!id) {
       return NextResponse.json(
         { message: "Invalid or missing Activite ID" },
         { status: 400 }
@@ -75,11 +80,17 @@ export async function PUT(
       );
     }
     if(customer){
+      
         existingaActivite.customer=customer
     }
     if(activities){
+      
         existingaActivite.activites=activities
     }
+    if(worker){
+ 
+      existingaActivite.worker=worker
+  }
     if(mt){
         existingaActivite.mt=mt 
     }

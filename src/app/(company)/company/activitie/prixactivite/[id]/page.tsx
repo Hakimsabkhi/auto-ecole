@@ -1,4 +1,5 @@
 "use client";
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
@@ -137,12 +138,20 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
           />
         </div>
+        <div className='grid grid-rows-1 gap-2'>
         <button
           type="submit"
           className="w-full bg-gray-900 hover:bg-gray-700 text-white py-2 rounded-md"
         >
           Update Activite
         </button>
+        <Link
+         href={"/company/activitie/prixactivite/"}
+          className="w-full bg-gray-900 hover:bg-gray-700 text-white py-2 rounded-md flex justify-center"
+        >
+          Retour
+        </Link>
+        </div>
       </form>
     </div>
   );

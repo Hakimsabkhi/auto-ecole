@@ -22,13 +22,22 @@ interface Activite {
   _id:string;
     ref: string;
     customer: Customer;
-    activites: string;
+    activites: activitetype;
+    worker:worker;
     mt: string;
     mp: string;  // Changed to string to allow flexibility
     nht: string;
     nhe: string;
     dateexam: string;
     status:string;
+}
+interface worker {
+  _id:string;
+  name:string;
+}
+interface activitetype{
+  _id:string;
+  name:string;
 }
 const ActiviteTable: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -147,6 +156,9 @@ const ActiviteTable: React.FC = () => {
             Activitie
             </th>
             <th className="px-4 py-2 text-left font-medium text-gray-600">
+            Moniteur / Monitrice
+            </th>
+            <th className="px-4 py-2 text-left font-medium text-gray-600">
               Client
             </th>
             <th className="px-4 py-2 text-left font-medium text-gray-600">
@@ -178,14 +190,15 @@ const ActiviteTable: React.FC = () => {
             <tr key={activity._id} className="border-t hover:bg-gray-50">
                   <td className="py-2 px-4  font-bold">{activity.ref}</td>
             
-              <td className="py-2 px-4">{activity.activites} </td>
+              <td className="py-2 px-4">{activity.activites.name} </td>
+              <td className="py-2 px-4">{activity.worker.name} </td>
               <td className="py-2 px-4">{activity.customer.firstname} {activity.customer.lastname}</td>
               <td className="py-2 px-4  ">{activity.mt}</td>
               <td className="py-2 px-4">{activity.mp}</td>
              
               <td className="py-2 px-4">{activity.nht}</td>
               <td className="py-2 px-4">{activity.nhe}</td>
-              <td className="py-2 px-4">{formatDate(activity.dateexam)||'N/A'}</td>
+              <td className="py-2 px-4"> {activity.dateexam ? formatDate(activity.dateexam) : 'N/A'}</td>
               <td className="py-2 px-4">  <select
             
             value={activity.status}

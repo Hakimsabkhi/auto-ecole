@@ -4,6 +4,8 @@ import Company from "@/models/Company";
 import { getToken } from "next-auth/jwt";
 import Customer from "@/models/Customer";
 import Activite from "@/models/Activite";
+import Activitetype from "@/models/Activitetype";
+import Worker from "@/models/Worker";
 async function getUserFromToken(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   if (!token) {
@@ -38,8 +40,8 @@ export async function POST(req: NextRequest) {
         nht,
         nhe,
         dateexam,
+        worker,
     } = body;
- 
     // Validate the input
     if (
       !customer ||
@@ -67,14 +69,33 @@ export async function POST(req: NextRequest) {
       });
     if (!existingCustomer) {
       return NextResponse.json(
-        { error: "username is already in use by a customer" },
+        { error: "customer is not ready" },
         { status: 405 }
       );
     }
 
+    const existtypeactivite= await Activitetype.findById({
+      _id:activities
+    });
+    if (!existtypeactivite) {
+      return NextResponse.json(
+        { error: "Activite is  not ready " },
+        { status: 408 }
+      );
+    }
+    const existworker= await Worker.findById({
+      _id:worker
+    });
+    if (!existworker) {
+      return NextResponse.json(
+        { error: "worker is  not ready " },
+        { status: 409 }
+      );
+    }
     await Activite.create({
       customer: existingCustomer,
-      activites:activities, // Make sure this matches the schema as "activites"
+      worker:existworker,
+      activites:existtypeactivite, // Make sure this matches the schema as "activites"
       mt,
       mp,
       nht,
