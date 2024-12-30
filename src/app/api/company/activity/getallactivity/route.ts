@@ -5,6 +5,7 @@ import Company from "@/models/Company";
 import Customer from "@/models/Customer";
 import Activite from "@/models/Activite";
 import Activitetype from "@/models/Activitetype";
+import Worker from "@/models/Worker";
 async function getUserFromToken(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   if (!token) {
@@ -31,6 +32,7 @@ export async function GET(req: NextRequest) {
     }
     await Customer.find();
     await Activitetype.find();
+    await Worker.find();
     const activite = await Activite.find({ company: result.user._id })
     .populate('customer') 
     .populate('activites') 
