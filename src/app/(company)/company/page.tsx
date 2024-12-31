@@ -1,18 +1,29 @@
 "use client"
+import Activitepoppup from '@/components/Company/Activitepoppup';
 import React, { useState } from 'react';
 
 const SchedulePage: React.FC = () => {
   const hours = Array.from({ length: 14 }, (_, i) => `${i + 7}:00`);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [openaddactivite, setOpenaddactivite]=useState(false);
+  const [dh, setDh] = useState<{ dates: string; houer: string }>({
+    dates: '',
+    houer: '',
+  });
 
+ function close(){
+  setOpenaddactivite(false)
+ }
   // Generate columns based on the current date
   const columns = Array.from({ length: 3 }, (_, i) => {
     const date = new Date(currentDate);
     date.setDate(currentDate.getDate() + i);
     const options: Intl.DateTimeFormatOptions = { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' };
+    const optionss: Intl.DateTimeFormatOptions = {  day: '2-digit', month: '2-digit', year: 'numeric' };
     return {
       label: date.toLocaleDateString('fr-FR', options), // Example: "Monday, 12/11/2024"
       day: date.toLocaleDateString('en-FR', { weekday: 'long' }), // Example: "Monday"
+      date: date.toLocaleDateString('fr-FR', optionss),
     };
   });
 
@@ -36,6 +47,16 @@ const SchedulePage: React.FC = () => {
     newDate.setDate(currentDate.getDate() + 1);
     setCurrentDate(newDate);
   };
+ function handleaddactivite(str:string,hstr:string){
+  console.log(str,hstr)
+  setDh({
+    dates: str,
+    houer: hstr,
+  });
+  
+  setOpenaddactivite(true)
+
+ }
 
   return (
     <div className="h-screen flex flex-col items-center p-4 w-full">
@@ -90,25 +111,20 @@ const SchedulePage: React.FC = () => {
                 <div className="text-sm flex items-center bg-white justify-center text-black">  +</div>
                 </div>
                 ) : (
-                  '+'
+                  <button className="w-[100%]" type='button' onClick={()=>handleaddactivite(col.date,hour)}>+</button>
                 )}
               </div>
             ))}
           </React.Fragment>
         ))}
       </div>
-      <div className="z-50 fixed inset-0 flex items-center justify-center">
-  {/* Background overlay */}
-  <div className="absolute inset-0 bg-slate-500 opacity-50"></div>
-
-  {/* Centered content */}
-  <div className="relative bg-white w-[30%] h-[60%] rounded-3xl shadow-lg z-10">
-    {/* Content goes here */}
-    <h1 className='text-2xl font-bold '>Activite</h1>
-  </div>
+      {openaddactivite && <Activitepoppup 
+                close={close}
+                dh={dh}
+      />}
 </div>
 
-    </div>
+  
   );
 };
 

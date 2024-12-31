@@ -11,4 +11,15 @@ export const formatDate = (date:string) => {
     // Format to YYYY-MM-DD HH:mm
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
+  export function formatTime (time:string) {
+    if (!time) return ""; // Handle empty or undefined values
+    const [hours, minutes] = time.split(":");
+    if (hours && minutes) {
+      // Ensure hours and minutes are valid numbers
+      const validHours = parseInt(hours, 10).toString().padStart(2, "0");
+      const validMinutes = parseInt(minutes, 10).toString().padStart(2, "0");
+      return `${validHours}:${validMinutes}`;
+    }
+    return "00:00"; // Default fallback
+  }
   
