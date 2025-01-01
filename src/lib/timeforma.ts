@@ -23,3 +23,19 @@ export const formatDate = (date:string) => {
     return "00:00"; // Default fallback
   }
   
+  export function formatDatetodate(dates: string) {
+    const date = new Date(dates);
+
+    const optionss: Intl.DateTimeFormatOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+
+    return {
+      date: date.toLocaleDateString('fr-FR', optionss),
+    };
+  }
+  export const extractHour = (time: string) => {
+    const [hour, minutes] = time.split(':');
+    // Parse the hour to remove leading zero if present
+    const formattedHour = parseInt(hour, 10);  // Converts to integer, removing leading zero
+    return `${formattedHour}:${minutes}`;
+  };
+  

@@ -1,38 +1,111 @@
-"use client"
-import Activitepoppup from '@/components/Company/Activitepoppup';
-import React, { useState } from 'react';
+"use client";
+import Activitepoppup from "@/components/Company/Activitepoppup";
+import { extractHour, formatDatetodate } from "@/lib/timeforma";
+import Activite from "@/models/Activite";
+import React, { useEffect, useState } from "react";
+
+interface Working {
+  _id: string;
+  date: string;
+  activite: Activite[];
+  hstart: string;
+  hfinish: string;
+}
+interface Activite {
+  _id: string;
+  ref: string;
+  customer: Customer;
+  worker: Worker;
+  activites: ActiviteType;
+  mt: string;
+  mp: string;
+  nht: string;
+  nhe: string;
+  dateexam: Date;
+  status: string;
+}
+
+interface Customer {
+  _id: string;
+  firstname: string;
+  lastname: string;
+}
+
+interface Worker {
+  _id: string;
+  name: string;
+}
+
+interface ActiviteType {
+  _id: string;
+  name: string;
+}
 
 const SchedulePage: React.FC = () => {
   const hours = Array.from({ length: 14 }, (_, i) => `${i + 7}:00`);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [openaddactivite, setOpenaddactivite]=useState(false);
+  const [openaddactivite, setOpenaddactivite] = useState(false);
+  const [workings, setWorkings] = useState<Working[]>([]);
   const [dh, setDh] = useState<{ dates: string; houer: string }>({
-    dates: '',
-    houer: '',
+    dates: "",
+    houer: "",
   });
 
- function close(){
-  setOpenaddactivite(false)
- }
+  function close() {
+    setOpenaddactivite(false);
+  }
+
+  const fetchworking = async () => {
+    try {
+      const response = await fetch("/api/company/working/getworking");
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch working");
+      }
+
+      const { existworking } = await response.json();
+      setWorkings(existworking); // Update state with fetched data
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error("An unknown error occurred");
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchworking();
+  }, []);
+
   // Generate columns based on the current date
   const columns = Array.from({ length: 3 }, (_, i) => {
     const date = new Date(currentDate);
     date.setDate(currentDate.getDate() + i);
-    const options: Intl.DateTimeFormatOptions = { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' };
-    const optionss: Intl.DateTimeFormatOptions = {  day: '2-digit', month: '2-digit', year: 'numeric' };
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: "long",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    };
+    const optionss: Intl.DateTimeFormatOptions = {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    };
     return {
-      label: date.toLocaleDateString('fr-FR', options), // Example: "Monday, 12/11/2024"
-      day: date.toLocaleDateString('en-FR', { weekday: 'long' }), // Example: "Monday"
-      date: date.toLocaleDateString('fr-FR', optionss),
+      label: date.toLocaleDateString("fr-FR", options),
+      day: date.toLocaleDateString("en-FR", { weekday: "long" }),
+      date: date.toLocaleDateString("fr-FR", optionss),
     };
   });
 
   // Format the header to show the main selected date
-  const headerDate = currentDate.toLocaleDateString('en-US', {
-    weekday: 'long',
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
+  const headerDate = currentDate.toLocaleDateString("en-US", {
+    weekday: "long",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
   });
 
   // Handlers for navigation
@@ -47,16 +120,15 @@ const SchedulePage: React.FC = () => {
     newDate.setDate(currentDate.getDate() + 1);
     setCurrentDate(newDate);
   };
- function handleaddactivite(str:string,hstr:string){
-  console.log(str,hstr)
-  setDh({
-    dates: str,
-    houer: hstr,
-  });
-  
-  setOpenaddactivite(true)
 
- }
+  function handleaddactivite(str: string, hstr: string) {
+    console.log(str, hstr);
+    setDh({
+      dates: str,
+      houer: hstr,
+    });
+    setOpenaddactivite(true);
+  }
 
   return (
     <div className="h-screen flex flex-col items-center p-4 w-full">
@@ -66,14 +138,16 @@ const SchedulePage: React.FC = () => {
           onClick={handlePreviousDay}
           className="text-gray-700 px-4 py-2 border rounded hover:bg-gray-200"
         >
-          {'<'}
+          {"<"}
         </button>
-        <h1 className="text-lg font-bold text-gray-800">{headerDate.toUpperCase()}</h1>
+        <h1 className="text-lg font-bold text-gray-800">
+          {headerDate.toUpperCase()}
+        </h1>
         <button
           onClick={handleNextDay}
           className="text-gray-700 px-4 py-2 border rounded hover:bg-gray-200"
         >
-          {'>'}
+          {">"}
         </button>
       </div>
 
@@ -82,7 +156,12 @@ const SchedulePage: React.FC = () => {
         {/* Hours Column */}
         <div className="bg-white p-2 text-center font-bold">Heures</div>
         {columns.map((col, i) => (
-          <div key={i} className={`bg-gray-300 p-2 text-center font-bold  ${i === 1 ? 'bg-gray-400' : ''}`}>
+          <div
+            key={i}
+            className={`bg-gray-300 p-2 text-center font-bold  ${
+              i === 1 ? "bg-gray-400" : ""
+            }`}
+          >
             {col.label}
           </div>
         ))}
@@ -91,40 +170,56 @@ const SchedulePage: React.FC = () => {
         {hours.map((hour, i) => (
           <React.Fragment key={i}>
             <div className="bg-white p-2 text-center">{hour}</div>
-            {columns.map((col, j) => (
-              <div
-                key={j}
-                className={`border p-2 text-center  ${
-                  col.day === 'Monday' && hour === '8:00' ? 'bg-gray-500 text-white' : 'hover:bg-gray-200'
-                }`}
-              >
-                {col.day === 'Monday' && hour === '8:00' ? (
-                  <div className=' overflow-y-scroll h-20 ' >
-                  <div className="text-sm border-b-2">
-                    <p>A: code</p>
-                    <p>H.D: 8:30</p>
-                    <p>C:msb</p>
-                    <p>C:becher</p>
-            
-                  </div>
-               
-                <div className="text-sm flex items-center bg-white justify-center text-black">  +</div>
+            {columns.map((col, j) => {
+              // Check if there's a matching working activity for the specific date and hour
+              const matchingWorking = workings.find(
+                (work) =>
+                  formatDatetodate(work.date).date === col.date &&
+                  extractHour(work.hstart) === hour
+              );
+
+              return (
+                <div
+                  key={j}
+                  className={`border p-2 text-center`}
+                >
+                  {matchingWorking ? (
+                    <div className="overflow-y-scroll h-20">
+                      <div className="text-sm border-b-2">
+                        {matchingWorking.activite.map((Activite, index) => (
+                          <div key={index} className="flex flex-row-1  bg-gray-500 p-2 border-b-2 ">
+                           <div className="flex flex-col justify-start items-start">
+                           <span> A: {Activite.activites.name}</span>
+                           <span> H.D: {matchingWorking.hstart}</span>
+                           </div>
+                           <div className="flex flex-col justify-start items-start">
+                           <span>C: {Activite.customer.firstname}{" "}
+                            {Activite.customer.lastname}</span>
+                            <span>   F: {Activite.worker.name}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      className="w-[100%]"
+                      type="button"
+                      onClick={() => handleaddactivite(col.date, hour)}
+                    >
+                      +
+                    </button>
+                  )}
                 </div>
-                ) : (
-                  <button className="w-[100%]" type='button' onClick={()=>handleaddactivite(col.date,hour)}>+</button>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </React.Fragment>
         ))}
       </div>
-      {openaddactivite && <Activitepoppup 
-                close={close}
-                dh={dh}
-      />}
-</div>
 
-  
+      {/* Popup for adding activity */}
+      {openaddactivite && <Activitepoppup close={close} dh={dh} />}
+    </div>
   );
 };
 

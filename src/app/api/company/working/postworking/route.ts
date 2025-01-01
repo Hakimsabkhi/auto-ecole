@@ -1,11 +1,9 @@
 import {  NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
 import connectToDatabase from '@/lib/db';
-import Admin from '@/models/Admin';
 import Company from '@/models/Company';
 import { getToken } from 'next-auth/jwt';
 import Working from '@/models/Working';
-import Activite from '@/models/Activite';
+
 async function getUserFromToken(req: NextRequest) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
     if (!token) {
@@ -38,10 +36,11 @@ export async function POST(req:NextRequest) {
     // Connect to the database
 
 
+    const dateParts = date.split('/');
 
    // Create the new user
     await Working.create({
-            date:date,
+            date:new Date(Date.UTC(Number(dateParts[2]), Number(dateParts[1]) - 1, Number(dateParts[0]), 0, 0, 0, 0)),
             activite:activities,
             hstart:timeStart,
             hfinish:timeEnd,
