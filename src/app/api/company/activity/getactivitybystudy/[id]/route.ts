@@ -59,9 +59,8 @@ export async function GET(
     // Check if the subscription exists
     await Activitetype.find();
     await Worker.find();
-    const existingaActivitetype =await Activitetype.findOne({
-        name:id,
-        company: result.user._id,
+    const existingaActivitetype =await Activitetype.findById({
+        _id:id,
     })
     
     if (!existingaActivitetype) {

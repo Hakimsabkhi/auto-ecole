@@ -53,9 +53,9 @@ const CompanyNav = () => {
 
         <li>
           <Link href={"/company/activitie"}
-            className="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+            className="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-3 py-3 transition-all">
 
-             <IoListCircle className='w-[25px] h-[25px] mr-4'/>
+             <IoListCircle className='w-[25px] h-[25px] mr-3'/>
             <span>List activitie</span>
           </Link>
         </li>

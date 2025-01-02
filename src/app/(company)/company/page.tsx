@@ -200,10 +200,17 @@ const SchedulePage: React.FC = () => {
                           </div>
                         ))}
                       </div>
+                      <button
+                      className="w-[100%] p-2 border border-gray-500"
+                      type="button"
+                      onClick={() => handleaddactivite(col.date, hour)}
+                    >
+                      +
+                    </button>
                     </div>
                   ) : (
                     <button
-                      className="w-[100%]"
+                      className="w-[100%] p-2 border border-gray-500"
                       type="button"
                       onClick={() => handleaddactivite(col.date, hour)}
                     >
@@ -218,7 +225,7 @@ const SchedulePage: React.FC = () => {
       </div>
 
       {/* Popup for adding activity */}
-      {openaddactivite && <Activitepoppup close={close} dh={dh} />}
+      {openaddactivite && <Activitepoppup close={close} dh={dh} fetchworking={fetchworking}/>}
     </div>
   );
 };
