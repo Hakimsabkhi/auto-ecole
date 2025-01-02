@@ -46,14 +46,32 @@ const SchedulePage: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [openaddactivite, setOpenaddactivite] = useState(false);
   const [workings, setWorkings] = useState<Working[]>([]);
+    const [activitiestype, setActivitiestype] = useState<ActiviteType[]>([]);
+    const [selectedActivityType, setSelectedActivityType] = useState<string>("");
+  
   const [dh, setDh] = useState<{ dates: string; houer: string }>({
     dates: "",
     houer: "",
   });
-
+  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedActivityType(e.target.value);
+  };
   function close() {
     setOpenaddactivite(false);
   }
+ const fetchActivitytype = async () => {
+    try {
+      const response = await fetch(`/api/company/activity/type/getalltype`);
+      if (!response.ok) throw new Error("Failed to fetch activitietype");
+
+      const data = await response.json();
+      
+      setActivitiestype(data);
+    } catch (err: unknown) {
+      console.error("Error fetching activitiestype:", err);
+    }
+  };
+
 
   const fetchworking = async () => {
     try {
@@ -76,6 +94,7 @@ const SchedulePage: React.FC = () => {
 
   useEffect(() => {
     fetchworking();
+    fetchActivitytype();
   }, []);
 
   // Generate columns based on the current date
@@ -132,6 +151,39 @@ const SchedulePage: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-col items-center p-4 w-full">
+      <h1 className="text-3xl font-bold ">Agenda de travail</h1>
+<div className="flex items-center justify-center space-x-4 p-8 ">
+       <label
+              
+                className="flex items-center  space-x-2 cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  name="option"
+                  value=''
+                  defaultChecked
+                 onChange={handleRadioChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+                />
+                <span className="text-gray-700">All</span>
+              </label>
+            {activitiestype.map((option) => (
+              
+              <label
+                key={option._id}
+                className="flex items-center  space-x-2 cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  name="option"
+                  value={option._id}
+                 onChange={handleRadioChange}
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+                />
+                <span className="text-gray-700">{option.name}</span>
+              </label>
+            ))}
+          </div>
       {/* Header */}
       <div className="flex justify-between items-center max-w-4xl mb-4 w-full">
         <button
@@ -171,12 +223,17 @@ const SchedulePage: React.FC = () => {
           <React.Fragment key={i}>
             <div className="bg-white p-2 text-center">{hour}</div>
             {columns.map((col, j) => {
+               
               // Check if there's a matching working activity for the specific date and hour
-              const matchingWorking = workings.find(
-                (work) =>
-                  formatDatetodate(work.date).date === col.date &&
-                  extractHour(work.hstart) === hour
-              );
+             // Check if there's a matching working activity for the specific date and hour
+const matchingWorking = workings.find(
+  (work) =>
+    formatDatetodate(work.date).date === col.date &&
+    extractHour(work.hstart) === hour &&
+    (selectedActivityType
+      ? work.activite.some((activite) => activite.activites._id === selectedActivityType)
+      : true)  // If no selectedActivityType, always return true (no filtering by activity type)
+);
 
               return (
                 <div
@@ -187,15 +244,16 @@ const SchedulePage: React.FC = () => {
                     <div className="overflow-y-scroll h-20">
                       <div className="text-sm border-b-2">
                         {matchingWorking.activite.map((Activite, index) => (
-                          <div key={index} className="flex flex-row-1  bg-gray-500 p-2 border-b-2 ">
+                          <div key={index} className="grid grid-cols-2  bg-gray-500 p-2 border-b-2 gap-2">
                            <div className="flex flex-col justify-start items-start">
                            <span> A: {Activite.activites.name}</span>
                            <span> H.D: {matchingWorking.hstart}</span>
+                           <span> H.F: {matchingWorking.hfinish}</span>
                            </div>
-                           <div className="flex flex-col justify-start items-start">
-                           <span>C: {Activite.customer.firstname}{" "}
-                            {Activite.customer.lastname}</span>
-                            <span>   F: {Activite.worker.name}</span>
+                           <div className="flex flex-col  items-start justify-center">
+                           <span>C: {Activite.customer.firstname}<br/>
+                                    {Activite.customer.lastname}</span>
+                            <span>F: {Activite.worker.name}</span>
                             </div>
                           </div>
                         ))}
