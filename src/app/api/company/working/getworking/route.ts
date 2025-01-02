@@ -5,6 +5,8 @@ import Company from '@/models/Company';
 import Working from '@/models/Working';
 import Activite from '@/models/Activite';
 import Activitetype from '@/models/Activitetype';
+import Customer from '@/models/Customer';
+import Worker from '@/models/Worker';
 
 async function getUserFromToken(req: NextRequest) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
@@ -28,7 +30,8 @@ try{
     if ('error' in result) {
       return NextResponse.json({ error: result.error }, { status: result.status });
     }
-     
+    await Worker.find();
+    await Customer.find();
     await Activite.find();
     await Activitetype.find();
       const existworking = await Working.find({ company: result.user._id}).populate({

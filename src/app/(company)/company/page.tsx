@@ -243,6 +243,7 @@ const matchingWorking = workings.find(
                   {matchingWorking ? (
                     <div className="overflow-y-scroll h-20">
                       <div className="text-sm border-b-2">
+                        
                         {matchingWorking.activite.map((Activite, index) => (
                           <div key={index} className="grid grid-cols-2  bg-gray-500 p-2 border-b-2 gap-2">
                            <div className="flex flex-col justify-start items-start">
