@@ -35,6 +35,7 @@ interface Activite {
 interface car{
   _id:string;
   model:string;
+  bn:string;
 }
 interface worker {
   _id:string;
@@ -200,7 +201,7 @@ const ActiviteTable: React.FC = () => {
             
               <td className="py-2 px-4">{activity.activites.name} </td>
               <td className="py-2 px-4">{activity.worker.name} </td>
-              <td className="py-2 px-4">{activity.car.model} </td>
+              <td className="py-2 px-4">{activity.car.model}{' '} {activity.car.bn} </td>
               <td className="py-2 px-4">{activity.customer.firstname} {activity.customer.lastname}</td>
               <td className="py-2 px-4  ">{activity.mt}</td>
               <td className="py-2 px-4">{activity.mp}</td>

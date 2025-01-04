@@ -1,16 +1,19 @@
 "use client";
 import Activitepoppup from "@/components/Company/Activitepoppup";
+import PopupDelete from "@/components/popup/DeletePopup";
 import { extractHour, formatDatetodate } from "@/lib/timeforma";
 import Activite from "@/models/Activite";
 import React, { useEffect, useState } from "react";
+import { BiX } from "react-icons/bi";
 
 interface Working {
   _id: string;
   date: string;
-  activite: Activite[];
+  activite: Activite;
   hstart: string;
   hfinish: string;
 }
+
 interface Activite {
   _id: string;
   ref: string;
@@ -46,33 +49,34 @@ const SchedulePage: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [openaddactivite, setOpenaddactivite] = useState(false);
   const [workings, setWorkings] = useState<Working[]>([]);
-    const [activitiestype, setActivitiestype] = useState<ActiviteType[]>([]);
-    const [selectedActivityType, setSelectedActivityType] = useState<string>("");
-  
+  const [activitiestype, setActivitiestype] = useState<ActiviteType[]>([]);
+  const [selectedActivityType, setSelectedActivityType] = useState<string>("");
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+   const [selected, setSelected] = useState<Working | null>(null);
   const [dh, setDh] = useState<{ dates: string; houer: string }>({
     dates: "",
     houer: "",
   });
+
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedActivityType(e.target.value);
   };
-  function close() {
+
+  const close = () => {
     setOpenaddactivite(false);
-  }
- const fetchActivitytype = async () => {
+  };
+
+  const fetchActivitytype = async () => {
     try {
       const response = await fetch(`/api/company/activity/type/getalltype`);
       if (!response.ok) throw new Error("Failed to fetch activitietype");
 
       const data = await response.json();
-      
-      
       setActivitiestype(data);
-    } catch (err: unknown) {
+    } catch (err) {
       console.error("Error fetching activitiestype:", err);
     }
   };
-
 
   const fetchworking = async () => {
     try {
@@ -83,15 +87,23 @@ const SchedulePage: React.FC = () => {
       }
 
       const { existworking } = await response.json();
-      console.log(existworking)
       setWorkings(existworking); // Update state with fetched data
-    } catch (err: unknown) {
+    } catch (err) {
       if (err instanceof Error) {
         console.error(err.message);
       } else {
         console.error("An unknown error occurred");
       }
     }
+  };
+   
+  const handleDeleteClick = (working: Working) => {
+    setSelected(working);
+    setIsPopupOpen(true);
+  };
+  const handleClosePopup = () => {
+    setIsPopupOpen(false);
+    setSelected(null);
   };
 
   useEffect(() => {
@@ -143,49 +155,69 @@ const SchedulePage: React.FC = () => {
   };
 
   function handleaddactivite(str: string, hstr: string) {
-    console.log(str, hstr);
     setDh({
       dates: str,
       houer: hstr,
     });
     setOpenaddactivite(true);
   }
+  const deleteworking = async (workingid: string) => {
+    try {
+      const response = await fetch(
+        `/api/company/working/deleteworking/${workingid}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete working");
+      }
+      fetchworking();
+      console.log("Deleted successfully");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(`Failed to delete working: ${err.message}`);
+      } else {
+        console.error("Failed to delete working: Unknown error");
+      }
+    } finally {
+      handleClosePopup();
+    }
+  };
+    
+  
 
   return (
     <div className="h-screen flex flex-col items-center p-4 w-full">
       <h1 className="text-3xl font-bold ">Agenda de travail</h1>
-<div className="flex items-center justify-center space-x-4 p-8 ">
-       <label
-              
-                className="flex items-center  space-x-2 cursor-pointer"
-              >
-                <input
-                  type="radio"
-                  name="option"
-                  value=''
-                  defaultChecked
-                 onChange={handleRadioChange}
-                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
-                />
-                <span className="text-gray-700">All</span>
-              </label>
-            {activitiestype.map((option) => (
-              
-              <label
-                key={option._id}
-                className="flex items-center  space-x-2 cursor-pointer"
-              >
-                <input
-                  type="radio"
-                  name="option"
-                  value={option._id}
-                 onChange={handleRadioChange}
-                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
-                />
-                <span className="text-gray-700">{option.name}</span>
-              </label>
-            ))}
-          </div>
+
+      <div className="flex items-center justify-center space-x-4 p-8 ">
+        <label className="flex items-center space-x-2 cursor-pointer">
+          <input
+            type="radio"
+            name="option"
+            value=""
+            defaultChecked
+            onChange={handleRadioChange}
+            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+          />
+          <span className="text-gray-700">All</span>
+        </label>
+        {activitiestype.map((option) => (
+          <label key={option._id} className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="radio"
+              name="option"
+              value={option._id}
+              onChange={handleRadioChange}
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+            />
+            <span className="text-gray-700">{option.name}</span>
+          </label>
+        ))}
+      </div>
+
       {/* Header */}
       <div className="flex justify-between items-center max-w-4xl mb-4 w-full">
         <button
@@ -225,59 +257,69 @@ const SchedulePage: React.FC = () => {
           <React.Fragment key={i}>
             <div className="bg-white p-2 text-center">{hour}</div>
             {columns.map((col, j) => {
-               
-              // Check if there's a matching working activity for the specific date and hour
-             // Check if there's a matching working activity for the specific date and hour
-const matchingWorking = workings.find(
-  (work) =>
-    formatDatetodate(work.date).date === col.date &&
-    extractHour(work.hstart) === hour &&
-    (selectedActivityType
-      ? work.activite.some((activite) => activite.activites._id === selectedActivityType)
-      : true)  // If no selectedActivityType, always return true (no filtering by activity type)
-);
+              // Find all matching working activities for the specific date and hour
+              const matchingWorkings = workings.filter(
+                (work) =>
+                  formatDatetodate(work.date).date === col.date &&
+                  extractHour(work.hstart) === hour &&
+                  (selectedActivityType
+                    ? work.activite.activites._id === selectedActivityType
+                    : true)
+              );
+
+             
 
               return (
-                <div
-                  key={j}
-                  className={`border p-2 text-center`}
-                >
-                  {matchingWorking ? (
-                    <div className="overflow-y-scroll h-20">
-                      <div className="text-sm border-b-2 ">
-                        
-                        {matchingWorking.activite?.map((Activite, index) => (
-                          <div key={index} className="grid grid-cols-2  bg-gray-500 p-2 border-b-2 gap-2">
-                           <div className="flex flex-col justify-start items-start">
-                           <span> A: {Activite.activites.name}</span>
-                           <span> H.D: {matchingWorking.hstart}</span>
-                           <span> H.F: {matchingWorking.hfinish}</span>
-                           </div>
-                           <div className="flex flex-col  items-start justify-center">
-                           <span>C: {Activite.customer.firstname}<br/>
-                                    {Activite.customer.lastname}</span>
-                            <span>F: {Activite.worker.name}</span>
+                <div key={j} className="border p-2 text-center">
+              
+              {matchingWorkings.length>0 ? (
+                <>
+                      <div className="overflow-x-scroll h-24 w-56">
+                        <div className="text-sm border-b-2 grid grid-flow-col ">
+                          {matchingWorkings.map((matchingWork, idx) => (
+                            <div key={idx} className="relative  grid grid-cols-2 bg-gray-500 p-2 border-l-2 w-52 ">
+                              <div className="flex flex-col items-start ">
+                                <span>A: {matchingWork.activite.activites.name}</span>
+                                <span>H.D: {matchingWork.hstart}</span>
+                                <span>H.F: {matchingWork.hfinish}</span>
+                              </div>
+                              <div className="flex flex-col items-start ">
+                                <span>
+                                  C: {matchingWork.activite.customer.firstname}
+                                  <br />
+                                  {matchingWork.activite.customer.lastname}
+                                </span>
+                                <span>F: {matchingWork.activite.worker.name}</span>
+                              </div>
+                               {/* X Icon for removal */}
+                              <div className="absolute top-0 right-0 cursor-pointer " onClick={() => handleDeleteClick(matchingWork)}>
+                              {selected?._id === matchingWork._id ? (
+                                       "Processing..."
+                                     ) : (<BiX  className="h-4 w-4 text-red-500" /> )}
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                            <button
+                        className="w-[100%] p-2 border border-gray-500"
+                        type="button"
+                        onClick={() => handleaddactivite(col.date, hour)}
+                      >
+                        +
+                      </button>
+                        </div>
                       </div>
-                      <button
-                      className="w-[100%] p-2 border border-gray-500"
-                      type="button"
-                      onClick={() => handleaddactivite(col.date, hour)}
-                    >
-                      +
-                    </button>
-                    </div>
-                  ) : (
-                    <button
-                      className="w-[100%] p-2 border border-gray-500"
-                      type="button"
-                      onClick={() => handleaddactivite(col.date, hour)}
-                    >
-                      +
-                    </button>
-                  )}
+                    
+                      </>
+           ) : (
+            <button
+              className="w-[100%] p-2 border border-gray-500"
+              type="button"
+              onClick={() => handleaddactivite(col.date, hour)}
+            >
+              +
+            </button>
+          )}
+                  
                 </div>
               );
             })}
@@ -286,7 +328,15 @@ const matchingWorking = workings.find(
       </div>
 
       {/* Popup for adding activity */}
-      {openaddactivite && <Activitepoppup close={close} dh={dh} fetchworking={fetchworking}/>}
+      {openaddactivite && <Activitepoppup close={close} dh={dh} fetchworking={fetchworking} />}
+      {isPopupOpen && selected && (
+        <PopupDelete
+          handleClosePopup={handleClosePopup}
+          Delete={deleteworking}
+          id={selected._id}
+          name={selected.activite.ref}
+        />
+      )}
     </div>
   );
 };

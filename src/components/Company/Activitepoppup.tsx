@@ -33,22 +33,48 @@ interface ActiviteType {
 
 interface ActivitepoppupProp {
   close: () => void;
-  fetchworking:()=>void;
+  fetchworking: () => void;
   dh: {
     dates: string;
     houer: string;
   };
 }
 
-const Activitepoppup: React.FC<ActivitepoppupProp> = ({ close, dh ,fetchworking}) => {
-  const [activitiess, setActivitiess] = useState<Activite[]>([]);
-  const [activities, setActivities] = useState<Activite[]>([]);
-  const [newActivity, setNewActivity] = useState<Activite | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredActivities, setFilteredActivities] = useState<Activite[]>([]);
-  const [open, setOpen] = useState(false);
-  const [activitiestype, setActivitiestype] = useState<ActiviteType[]>([]);
+const Activitepoppup: React.FC<ActivitepoppupProp> = ({ close, dh, fetchworking }) => {
+  const [activitiess, setActivitiess] = useState<Activite[]>([]); // All activities
+  const [activities, setActivities] = useState<Activite[]>([]);   // Filtered activities (as an array)
+  const [searchTerm, setSearchTerm] = useState("");  // For search term
   const [selectedActivityType, setSelectedActivityType] = useState<string>("");
+
+  const [activitiestype, setActivitiestype] = useState<ActiviteType[]>([]);
+
+  // Fetch all activities for a specific activity type
+  const fetchActivity = async (id: string) => {
+    try {
+      const response = await fetch(`/api/company/activity/getactivitybystudy/${id}`);
+      if (!response.ok) throw new Error("Failed to fetch activities");
+
+      const { existingaActivite } = await response.json();
+      setActivitiess(existingaActivite);
+    } catch (err: unknown) {
+      console.error("Error fetching activities:", err);
+    }
+  };
+
+  // Fetch all activity types
+  const fetchActivitytype = async () => {
+    try {
+      const response = await fetch(`/api/company/activity/type/getalltype`);
+      if (!response.ok) throw new Error("Failed to fetch activity types");
+
+      const data = await response.json();
+      setActivitiestype(data);
+    } catch (err: unknown) {
+      console.error("Error fetching activity types:", err);
+    }
+  };
+
+  // Search activities based on search term
   const handleSearchActivite = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase();
     setSearchTerm(query);
@@ -59,83 +85,38 @@ const Activitepoppup: React.FC<ActivitepoppupProp> = ({ close, dh ,fetchworking}
         activity.customer.lastname.toLowerCase().includes(query) ||
         activity.customer.firstname.toLowerCase().includes(query)
     );
-    setFilteredActivities(filtered);
-    setOpen(true);
+    setActivities(filtered);
   };
 
+  // Handle activity type selection
+  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const activityType = e.target.value;
+    setSelectedActivityType(activityType);
+    fetchActivity(activityType); // Fetch activities based on selected type
+  };
+
+  // Handle selecting an activity
   const handleActiviteSelect = (activity: Activite) => {
     const str = `${activity.ref} ${activity.customer.firstname} ${activity.customer.lastname}`;
     setSearchTerm(str);
-    setNewActivity(activity);
-    setOpen(false);
+    setActivities([activity]); // Show only the selected activity as an array
   };
 
-  const removeActivity = (index: number) => {
-    setActivities((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const addActivity = () => {
-    if (
-      newActivity &&
-      !activities.some((activity) => activity._id === newActivity._id)
-    ) {
-      setActivities((prev) => [...prev, newActivity]);
-      setNewActivity(null);
-    }
-  };
-
-  const fetchActivity = async (id: string) => {
-    try {
-      const response = await fetch(
-        `/api/company/activity/getactivitybystudy/${id}`
-      );
-      if (!response.ok) throw new Error("Failed to fetch activities");
-
-      const { existingaActivite } = await response.json();
-      setActivitiess(existingaActivite);
-    } catch (err: unknown) {
-      console.error("Error fetching activities:", err);
-    }
-  };
-
-  const fetchActivitytype = async () => {
-    try {
-      const response = await fetch(`/api/company/activity/type/getalltype`);
-      if (!response.ok) throw new Error("Failed to fetch activitietype");
-
-      const data = await response.json();
-      console.log(data);
-      setActivitiestype(data);
-    } catch (err: unknown) {
-      console.error("Error fetching activitiestype:", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchActivitytype();
-  
-  }, []);
-  useEffect(() => {
-    if (selectedActivityType) {
-      fetchActivity(selectedActivityType);
-    }
-  }, [selectedActivityType]);
-  const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedActivityType(e.target.value);
-  };
-
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Logic to submit form data
+    if (!activities.length) {
+      alert("Please select an activity.");
+      return;
+    }
+
     const formData = {
-      activities,
+      activities: activities[0], // Only one activity is selected
       timeStart: (e.target as HTMLFormElement).startTime.value,
       timeEnd: (e.target as HTMLFormElement).endTime.value,
       date: dh.dates,
     };
-
-    console.log("Form submitted:", formData);
 
     try {
       const response = await fetch("/api/company/working/postworking", {
@@ -158,8 +139,18 @@ const Activitepoppup: React.FC<ActivitepoppupProp> = ({ close, dh ,fetchworking}
         alert("Submission failed. Please try again.");
       }
     }
-    // Perform API call or other submission logic here
   };
+
+  // Use effect to fetch activity types and activities when the type changes
+  useEffect(() => {
+    fetchActivitytype();
+  }, []);
+
+  useEffect(() => {
+    if (selectedActivityType) {
+      fetchActivity(selectedActivityType);
+    }
+  }, [selectedActivityType]);
 
   return (
     <div className="z-50 fixed inset-0 flex items-center justify-center">
@@ -171,7 +162,7 @@ const Activitepoppup: React.FC<ActivitepoppupProp> = ({ close, dh ,fetchworking}
             {activitiestype.map((option) => (
               <label
                 key={option._id}
-                className="flex items-center  space-x-2 cursor-pointer"
+                className="flex items-center space-x-2 cursor-pointer"
               >
                 <input
                   type="radio"
@@ -193,73 +184,50 @@ const Activitepoppup: React.FC<ActivitepoppupProp> = ({ close, dh ,fetchworking}
                 type="text"
                 placeholder="Search or add activity"
                 className="w-full border border-gray-300 rounded-md p-2"
-                disabled={!selectedActivityType} 
+                disabled={!selectedActivityType}
                 value={searchTerm}
                 onChange={handleSearchActivite}
               />
-              {open && (
-                <ul className="absolute top-32 mt-1 w-[80%] bg-white rounded-md shadow-md max-h-60 overflow-auto">
-                  {filteredActivities.map((activity) => (
-                    <li
-                      key={activity._id}
-                      className="p-2 hover:bg-gray-200 cursor-pointer"
-                      onClick={() => handleActiviteSelect(activity)}
-                    >
-                      {activity.ref} {activity.activites.name}{" "}
-                      {activity.customer.firstname} {activity.customer.lastname}
-                    </li>
-                  ))}
-                </ul>
-              )}
-              <button
-                type="button"
-                className="bg-gray-700 text-white hover:bg-gray-600 p-2 rounded-md"
-                onClick={addActivity}
-                
-              >
-                Add
-              </button>
             </div>
 
             <div className="mb-4 overflow-y-auto h-48 border border-gray-300 rounded-lg">
               <table className="w-full border-collapse">
                 <tbody>
-                  {activities.map((activity, index) => (
-                    <tr
-                      key={index}
-                      className="bg-purple-100 text-purple-900 text-sm border-b-2"
-                    >
-                      <td className="p-2 flex items-center gap-3 justify-between">
-                        <span className="border-r-2 p-2">
-                          RefActivite: <br />
-                          {activity.ref}
-                        </span>
-                        <span>
-                          A: {activity.activites.name} / C :{" "}
-                          {activity.customer.firstname}{" "}
-                          {activity.customer.lastname} <br />/ F :{" "}
-                          {activity.worker.name}
-                        </span>
-                        <button
-                          type="button"
-                          className="text-red-500 hover:text-red-700"
-                          onClick={() => removeActivity(index)}
-                        >
-                          Remove
-                        </button>
+                  {activities.length > 0 ? (
+                    activities.map((activity) => (
+                      <tr
+                        key={activity._id}
+                        className="bg-purple-100 text-purple-900 text-sm border-b-2"
+                        onClick={() => handleActiviteSelect(activity)}
+                      >
+                        <td className="p-2 flex items-center gap-3 justify-between">
+                          <span className="border-r-2 p-2">
+                            RefActivite: <br />
+                            {activity.ref}
+                          </span>
+                          <span>
+                            A: {activity.activites.name} / C :{" "}
+                            {activity.customer.firstname}{" "}
+                            {activity.customer.lastname} <br />/ F :{" "}
+                            {activity.worker.name}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={2} className="text-center p-4">
+                        No activities found
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label
-                  htmlFor="start-time"
-                  className="block text-gray-600 mb-1"
-                >
+                <label htmlFor="start-time" className="block text-gray-600 mb-1">
                   Heures de depart
                 </label>
                 <input

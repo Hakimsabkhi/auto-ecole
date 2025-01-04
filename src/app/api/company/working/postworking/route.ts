@@ -37,7 +37,7 @@ export async function POST(req:NextRequest) {
 
 
     const dateParts = date.split('/');
-
+console.log(activities)
    // Create the new user
     await Working.create({
             date:new Date(Date.UTC(Number(dateParts[2]), Number(dateParts[1]) - 1, Number(dateParts[0]), 0, 0, 0, 0)),
