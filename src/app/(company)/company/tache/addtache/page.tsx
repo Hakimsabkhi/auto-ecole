@@ -246,7 +246,7 @@ const ActivitiesForm: React.FC = () => {
         worker: "",
         car: "",
       });
-      route.push("/company/activitie");
+      route.push("/company/tache");
     } catch (err) {
       console.error("Error submitting form:", err);
       alert("An error occurred while submitting the form.");
@@ -255,7 +255,7 @@ const ActivitiesForm: React.FC = () => {
 
   return (
     <div className="p-4 w-full bg-white rounded-lg shadow-lg">
-      <h2 className="text-xl font-semibold text-center mb-6">Activity Form</h2>
+      <h2 className="text-xl font-semibold text-center mb-6">Ajouter une Tâche</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-4">
           {/* Search Input */}
@@ -461,7 +461,7 @@ const ActivitiesForm: React.FC = () => {
             Generate Activities
           </button>
           <Link
-            href={"/company/activitie/"}
+            href={"/company/tache/"}
             className="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 rounded-md flex justify-center"
           >
             Retour

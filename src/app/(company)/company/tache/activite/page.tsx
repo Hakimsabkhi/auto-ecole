@@ -83,16 +83,16 @@ const ActiviteTable: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-semibold mb-4"> Activite Prix Table</h1>
+      <h1 className="text-2xl font-semibold mb-4"> Activite Table</h1>
       <div className="flex w-full justify-end  gap-2 pb-4">
       <Link
-          href={"/company/activitie/"}
+          href={"/company/tache/"}
           className="bg-gray-800 p-4 rounded-md text-white"
         >
           Retour
         </Link>
         <Link
-          href={"/company/activitie/prixactivite/addactivite"}
+          href={"/company/tache/activite/addactivite"}
           className="bg-gray-800 p-4 rounded-md text-white"
         >
           Create Activite
@@ -125,7 +125,7 @@ const ActiviteTable: React.FC = () => {
               <td className="py-2 px-4">
                 <div className="p-2 flex gap-2">
                   <Link
-                    href={`/company/activitie/prixactivite/${item._id}`}
+                    href={`/company/tache/activite/${item._id}`}
                     className="bg-green-600 hover:bg-green-500 p-4 rounded-md text-white"
                   >
                     <CiEdit size={25} />

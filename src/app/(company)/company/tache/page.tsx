@@ -137,19 +137,19 @@ const ActiviteTable: React.FC = () => {
   
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-semibold mb-4">Activite Table</h1>
+      <h1 className="text-2xl font-semibold mb-4"> Tableau Tâches</h1>
       <div className="flex w-full justify-end  gap-2 pb-4">
         <Link
-          href={"/company/activitie/addactivitie"}
+          href={"/company/tache/addtache"}
           className="bg-gray-800 p-4 rounded-md text-white"
         >
-          Create Activite
+          Créer une Tâche
         </Link>
         <Link
-          href={"/company/activitie/prixactivite/"}
+          href={"/company/tache/activite/"}
           className="bg-gray-800 p-4 rounded-md text-white"
         >
-          List prix Activite
+          List  Activite
         </Link>
       </div>
       <table className="w-full border-collapse border border-gray-200 uppercase">
@@ -223,7 +223,7 @@ const ActiviteTable: React.FC = () => {
               <td className="py-2 px-4">
                 <div className="p-2 flex gap-2">
                   <Link
-                    href={`/company/activitie/${activity._id}`}
+                    href={`/company/tache/${activity._id}`}
                     className="bg-green-600 hover:bg-green-500 p-4 rounded-md text-white"
                   >
                     <CiEdit size={25} />

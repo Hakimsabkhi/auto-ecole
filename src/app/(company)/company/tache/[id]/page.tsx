@@ -26,7 +26,7 @@ interface car{
   model:string;
   bn:string;
 }
-const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) => {
+const TacheFormupdate= ({ params }: { params: Promise<{ id: string }> }) => {
     const [unwrappedParams, setUnwrappedParams] = useState<{ id: string } | null>(null);
  const route= useRouter();
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -291,7 +291,7 @@ try {
         dateexam: "",
         worker:""
       });
-      route.push('/company/activitie');
+      route.push('/company/tache');
     
     } catch (err) {
       console.error("Error submitting form:", err);
@@ -301,7 +301,7 @@ try {
 
   return (
     <div className="p-4 w-full bg-white rounded-lg shadow-lg">
-      <h2 className="text-xl font-semibold text-center mb-6">Update Activity</h2>
+      <h2 className="text-xl font-semibold text-center mb-6">édite une Tâche</h2>
       <form onSubmit={handleUpdate} className="space-y-4">
       <div className="space-y-4">
         {/* Search Input */}
@@ -492,7 +492,7 @@ try {
           Update Activities
         </button>
         <Link 
-            href={"/company/activitie"}
+            href={"/company/tache"}
           className="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 rounded-md flex justify-center"
         >
           Retour
@@ -504,4 +504,4 @@ try {
   );
 };
 
-export default ActivitiesFormupdate;
+export default TacheFormupdate;

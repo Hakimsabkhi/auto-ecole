@@ -1,67 +1,14 @@
 "use client";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-const Page = ({ params }: { params: Promise<{ id: string }> }) => {
+const Page = () => {
   const route = useRouter();
-   const [unwrappedParams, setUnwrappedParams] = useState<{ id: string } >();
   const [formData, setFormData] = useState({
     name: "",
     prix: 0,
   });
-
-
-     useEffect(() => {
-    
-        const fetchParams = async () => {
-          try {
-            const unwrapped = await params; 
-  
-            setUnwrappedParams(unwrapped);
-          } catch (error) {
-            console.error("Error unwrapping params:", error);
-          }
-        };
-    
-        fetchParams();
-      }, [params]);
-
-
-       useEffect(() => {
-          
-          
-          if (unwrappedParams?.id) {
-            console.log(unwrappedParams)   
-       const fetchActivity= async () => {
-          try {
-            const response = await fetch(`/api/company/activity/type/gettype/${unwrappedParams?.id}`);
-        
-              if (!response.ok) {
-                throw new Error("Failed to fetch workers");
-              }
-        
-              const {existingatype} = await response.json(); // Update state with fetched data
-        
-              setFormData({
-                name:existingatype.name,
-                prix:existingatype.prix
-              });
-             
-          } catch (err: unknown) {
-            if (err instanceof Error) {
-              console.error(err.message);
-            } else {
-              console.error("An unknown error occurred");
-            }
-          }
-        }
-        
-          fetchActivity();
-      }
-        }, [unwrappedParams]);
-
-
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -75,15 +22,18 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
     });
   };
 
-  const handleUpdate = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-   
+    if (!formData.name || formData.prix === 0) {
+      alert('Please fill in all fields');
+      return;
+    }
 
     // Submit form data to the API or handle as needed
     try {
-      const response = await fetch(`/api/company/activity/type/updatetype/${unwrappedParams?.id}`, {
-        method: 'PUT',
+      const response = await fetch('/api/company/activity/type/posttype', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -101,7 +51,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
       });
 
       // Redirect to the add activity page
-      route.push('/company/activitie/prixactivite');
+      route.push('/company/tache/prix');
     } catch (err) {
       console.error("Error submitting form:", err);
       alert("An error occurred while submitting the form.");
@@ -110,11 +60,11 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
   return (
     <div className="p-4 w-full bg-white rounded-lg shadow-lg">
-      <h2 className="text-xl font-semibold text-center mb-6">Activity Prix Update</h2>
-      <form onSubmit={handleUpdate} className="space-y-4">
+      <h2 className="text-xl font-semibold text-center mb-6">Activity </h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-            Activite
+            Name Activite
           </label>
           <input
             id="name"
@@ -143,11 +93,11 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
           type="submit"
           className="w-full bg-gray-900 hover:bg-gray-700 text-white py-2 rounded-md"
         >
-          Update Activite
+          Generate Activite
         </button>
         <Link
-         href={"/company/activitie/prixactivite/"}
-          className="w-full bg-gray-900 hover:bg-gray-700 text-white py-2 rounded-md flex justify-center"
+          href={"/company/tache/activite/"}
+          className=" bg-gray-600 hover:bg-gray-700 text-white py-2 rounded-md flex justify-center"
         >
           Retour
         </Link>
