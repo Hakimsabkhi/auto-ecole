@@ -98,7 +98,7 @@ const fetchActivitytype= async () => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md w-full">
       <h2 className="text-2xl font-semibold text-center mb-4">
-      Ajouter des informations Moniteur / Monitrice d'auto-école 
+      Ajouter des informations Moniteur / Monitrice d&apos;auto-école 
            </h2>
 
       <form className="space-y-4" onSubmit={handleSubmit}>

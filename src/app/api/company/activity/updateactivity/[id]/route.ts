@@ -4,8 +4,7 @@ import { getToken } from "next-auth/jwt";
 import Company from "@/models/Company";
 import Activite from "@/models/Activite";
 import Customer from "@/models/Customer";
-import Activitetype from "@/models/Activitetype";
-import Worker from "@/models/Worker";
+
 
 async function getUserFromToken(req: NextRequest) {
   try {

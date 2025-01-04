@@ -152,7 +152,7 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md w-full">
       <h2 className="text-2xl font-semibold text-center mb-4">
-        Modifier des informations Moniteur / Monitrice d'auto-école
+        Modifier des informations Moniteur / Monitrice d&apos;auto-école
       </h2>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
