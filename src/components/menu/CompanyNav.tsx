@@ -4,17 +4,21 @@ import Link from 'next/link'
 import React from 'react'
 import { IoListCircle } from 'react-icons/io5'
 
+import { RiPoliceCarLine } from 'react-icons/ri'
+
+
 
 const CompanyNav = () => {
   return (
     <>
-    <nav className="bg-[#f7f7f8] h-screen-[100%] min-w-[250px] py-6 px-4 font-[sans-serif]">
+
+    <nav className="bg-[#f7f7f8] h-screen min-w-[280px] py-6 px-4 font-[sans-serif] ">
 
   
     <div className="overflow-auto py-6 h-full mt-4">
       <ul className="space-y-1">
         <li>
-          <a 
+        <Link href={"/company"}
             className="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="w-[18px] h-[18px] mr-4"
               viewBox="0 0 512 512">
@@ -23,7 +27,7 @@ const CompanyNav = () => {
                 data-original="#000000" />
             </svg>
             <span>Dashboard</span>
-          </a>
+          </Link>
         </li>
         <li>
           <Link href={"/company/worker"}
@@ -59,7 +63,14 @@ const CompanyNav = () => {
             <span>List activitie</span>
           </Link>
         </li>
+        <li>
+          <Link href={"/company/car"}
+            className="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-3 py-3 transition-all">
 
+             <RiPoliceCarLine   className='w-[23px] h-[23px] mr-3'/>
+            <span>List Voiture</span>
+          </Link>
+        </li>
         
         <li>
           <a

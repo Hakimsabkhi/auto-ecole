@@ -47,7 +47,7 @@ export async function GET(
     // Validate the provided ID
     if (!id) {
       return NextResponse.json(
-        { message: "Invalid or missing worker ID" },
+        { message: "Invalid or missing customer ID" },
         { status: 400 }
       );
     }
@@ -60,14 +60,14 @@ export async function GET(
     if (!existingCustomer) {
       return NextResponse.json(
         { message: "Customer not found" },
-        { status: 404 }
+        { status: 408 }
       );
     }
 
     // Return success response
     return NextResponse.json({ existingCustomer }, { status: 200 });
   } catch (error) {
-    console.error("Error  Worker:", error);
+    console.error("Error  Customer:", error);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }

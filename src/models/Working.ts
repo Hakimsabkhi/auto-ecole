@@ -4,7 +4,7 @@ import { IActivite } from "./Activite";
 
 export interface IWorking extends Document {
     date:Date;
-    activite:[IActivite]|[string];
+    activite:IActivite|string;
     hstart:string;
     hfinish:string;
     company:ICompany|string;
@@ -13,7 +13,7 @@ export interface IWorking extends Document {
 const WorkingSchema: Schema = new Schema(
   {
     date:{type:Date,required:true},
-    activite:{type:[mongoose.Schema.Types.ObjectId],ref:"Activite"},
+    activite:{type:mongoose.Schema.Types.ObjectId,ref:"Activite"},
     hstart:{type:String,required:true},
     hfinish:{type:String,required:true},
     company: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },

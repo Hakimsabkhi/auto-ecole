@@ -54,7 +54,7 @@ export async function PUT(
     // Validate the provided ID
     if (!id) {
       return NextResponse.json(
-        { message: "Invalid or missing subscription ID" },
+        { message: "Invalid or missing customer ID" },
         { status: 400 }
       );
     }
@@ -66,7 +66,7 @@ export async function PUT(
     if (!existingCustomer) {
       return NextResponse.json(
         { message: "Customer not found" },
-        { status: 404 }
+        { status: 408 }
       );
     }
 
@@ -92,11 +92,11 @@ export async function PUT(
 
     // Return success response
     return NextResponse.json(
-      { message: "worker upadate status successfully" },
+      { message: "Customer upadate status successfully" },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error upadate status worker:", error);
+    console.error("Error upadate status Customer:", error);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }

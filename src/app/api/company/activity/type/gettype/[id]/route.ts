@@ -59,15 +59,15 @@ export async function GET(
     });
     if (!existingatype) {
       return NextResponse.json(
-        { message: "Customer not found" },
-        { status: 404 }
+        { message: "Activitetype not found" },
+        { status: 408 }
       );
     }
 
     // Return success response
     return NextResponse.json({ existingatype }, { status: 200 });
   } catch (error) {
-    console.error("Error  existingaActivite:", error);
+    console.error("Error  Activitetype:", error);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }

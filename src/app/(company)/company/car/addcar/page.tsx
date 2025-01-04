@@ -22,19 +22,16 @@ const CarForm: React.FC = () => {
   });
 
  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement >) => {
     const { name, value } = e.target;
-
-    // Handle input constraints for phone (only allow 8 digits)
-    if (name === "model" && value.length > 3) return;
- // Handle input constraints for cin (only allow 8 digits)
- if (name === "bn" && value.length > 8) return;
+  
+    // Update the specific form field dynamically
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
-
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,7 +70,7 @@ const CarForm: React.FC = () => {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md w-full">
-      <h2 className="text-2xl font-semibold text-center mb-4">Ajouter des informations voiteur</h2>
+      <h2 className="text-2xl font-semibold text-center mb-4">Ajouter des informations voiture</h2>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
         {/* First Name Field */}
@@ -88,7 +85,7 @@ const CarForm: React.FC = () => {
             name="model"
             value={formData.model}
             onChange={handleChange}
-            placeholder="Enter Model voiteur"
+            placeholder="Enter Model voiture"
             className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             required
           />

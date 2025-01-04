@@ -83,11 +83,11 @@ export async function POST(req: NextRequest) {
     await newCustomer.save();
     // Respond with the created user's data (excluding the password)
     return NextResponse.json(
-      { message: "creating successfully worker" },
+      { message: "creating successfully Cutomer" },
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error creating worker:", error);
+    console.error("Error creating Customer:", error);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }

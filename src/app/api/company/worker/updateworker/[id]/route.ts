@@ -49,7 +49,7 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
     if (!existingWorker) {
       return NextResponse.json(
         { message: "Subscription not found" },
-        { status: 404 }
+        { status: 408 }
       );
     }
     if(name!=""){

@@ -32,6 +32,8 @@ export const formatDate = (date:string) => {
       date: date.toLocaleDateString('fr-FR', optionss),
     };
   }
+    
+
   export const extractHour = (time: string) => {
     const [hour, minutes] = time.split(':');
     // Parse the hour to remove leading zero if present

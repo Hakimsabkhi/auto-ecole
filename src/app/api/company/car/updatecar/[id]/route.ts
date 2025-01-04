@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/lib/db";
 import { getToken } from "next-auth/jwt";
+import Car from "@/models/Car";
 import Company from "@/models/Company";
-import Activite from "@/models/Activite";
-import Customer from "@/models/Customer";
 
 async function getUserFromToken(req: NextRequest) {
   try {
@@ -35,7 +34,12 @@ export async function PUT(
 
     // Connect to the database
     await connectToDatabase();
-   
+    const {
+      model,
+      bn,
+      vd,
+    } = await req.json();
+    
     // Authenticate the user
     const result = await getUserFromToken(req);
     if ("error" in result) {
@@ -44,38 +48,47 @@ export async function PUT(
         { status: result.status }
       );
     }
-    const body = await req.json();
 
- 
     // Validate the provided ID
     if (!id) {
       return NextResponse.json(
-        { message: "Invalid or missing Activite ID" },
+        { message: "Invalid or missing car ID" },
         { status: 400 }
       );
     }
-    await Customer.find();
     // Check if the subscription exists
-    const existingaActivite = await Activite.findOne({
+    const existingCar = await Car.findOne({
       _id: id,
       company: result.user._id,
     });
-    if (!existingaActivite) {
+    if (!existingCar) {
       return NextResponse.json(
-        { message: "Activite not found" },
-        { status: 408 }
+        { message: "Car not found" },
+        { status: 406 }
       );
     }
-    if(body){
-        existingaActivite.status=body
-    }
-    
 
-   existingaActivite.save();
+    if (model != "") {
+        existingCar.model = model;
+    }
+    if (bn != "") {
+        existingCar.bn = bn;
+    }
+    if (vd != "") {
+        existingCar.vd = vd;
+    }
+
+   
+    existingCar.company = result.user._id;
+     await existingCar.save();
+
     // Return success response
-    return NextResponse.json( { status: 200 });
+    return NextResponse.json(
+      { message: "Car upadate status successfully" },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error("Error  existingaActivite:", error);
+    console.error("Error upadate status Car:", error);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }

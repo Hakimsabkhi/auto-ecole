@@ -75,8 +75,8 @@ export async function PUT(
     });
     if (!existingaActivite) {
       return NextResponse.json(
-        { message: "Customer not found" },
-        { status: 404 }
+        { message: "Activite not found" },
+        { status: 408 }
       );
     }
     if(customer){

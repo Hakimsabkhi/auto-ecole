@@ -61,7 +61,7 @@ export async function DELETE(
     if (!existingaActivite) {
       return NextResponse.json(
         { message: "Customer not found" },
-        { status: 404 }
+        { status: 408 }
       );
     }
    

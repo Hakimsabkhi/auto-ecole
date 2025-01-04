@@ -21,6 +21,11 @@ interface Activitetype {
   _id: string;
   name: string;
 }
+interface car{
+  _id:string;
+  model:string;
+  bn:string;
+}
 const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) => {
     const [unwrappedParams, setUnwrappedParams] = useState<{ id: string } | null>(null);
  const route= useRouter();
@@ -30,9 +35,12 @@ const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) =>
   const [OpenCustomer,setOpenCustomer]=useState<boolean>(false);
     const [options, setOptions] = useState<Activitetype[]>([]);
    const [workers, setWorkers] = useState<Worker[]>([]);
+    const [cars, setCars] = useState<car[]>([]);
+     const [prix,setPrix]=useState(0);
   const [formData, setFormData] = useState({
     customer: "",
     activities: "",
+    car:"",
     mt: 0,
     mp: 0,
     nht: 0,
@@ -103,7 +111,7 @@ const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) =>
     
     fetchCustomers();
     if (unwrappedParams?.id) {
-      console.log(unwrappedParams)   
+     
  const fetchActivity= async () => {
     try {
       const response = await fetch(`/api/company/activity/getactivity/${unwrappedParams?.id}`);
@@ -117,6 +125,7 @@ const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) =>
       setFormData({
         customer: existingaActivite.customer._id,
         activities: existingaActivite.activites,
+       car:existingaActivite.car,
         mt: existingaActivite.mt,
         mp: existingaActivite.mp,
         nht: existingaActivite.nht,
@@ -137,7 +146,7 @@ const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) =>
   }
   
     fetchActivity();
-  
+    hendercar();
 }
   }, [unwrappedParams]);
 
@@ -160,14 +169,62 @@ const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) =>
     }
   }
 };
+async function hendercar(){
+  try {
+    const response = await fetch(
+      `/api/company/car/getallcar/`
+    );
+    if (!response.ok) {
+      throw new Error("Failed to fetch workers");
+    }
+    
+    const data = await response.json();
+    setCars(data);
+  
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(err.message);
+    } else {
+      console.error("An unknown error occurred");
+    }
+  }
+};
+async function henderprix(value:string){
+try {
+  const response = await fetch(`/api/company/activity/type/gettype/${value}`)
+  if (!response.ok) {
+    throw new Error("Failed to fetch activite type");
+  }
+  console.log(value)
+  const {existingatype} = await response.json();
+  setPrix(existingatype.prix);
 
+} catch (err: unknown) {
+  if (err instanceof Error) {
+    console.error(err.message);
+  } else {
+    console.error("An unknown error occurred");
+  }
+}
+}
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: ["mt", "mp", "nht", "nhe"].includes(name) ? parseFloat(value) : value,
-    }));
+   
+    const newFormData = {
+      ...formData,
+      [name]:
+        name === "mt" || name === "mp" || name === "nht" || name === "nhe"
+          ? parseFloat(value)
+          : value,
+    };
+
+    // Calculate 'mt' (Montant Total) based on 'nht' (Nombre d'heures Totale) and 'prix'
+    if (name === "nht" || name === "activities") {
+      newFormData.mt = newFormData.nht * prix;
+    }
+
+    setFormData(newFormData);
   };
 
   const handleChangeactivities = async (
@@ -181,6 +238,8 @@ const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) =>
         [name]: ["mt", "mp", "nht", "nhe"].includes(name) ? parseFloat(value) : value,
       }));
       henderworkerchange(value)
+
+      henderprix(value)
     };
 
   const handleSearchCustomers = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -224,6 +283,7 @@ const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) =>
      setFormData({
         customer: "",
         activities: "",
+        car:"",
         mt: 0,
         mp: 0,
         nht: 0,
@@ -321,34 +381,36 @@ const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) =>
               ))}
             </select>
           </div>
-        <div>
-          <label htmlFor="mt" className="block text-sm font-medium text-gray-700">
-            Montant Total
-          </label>
-          <input
-            id="mt"
-            name="mt"
-            type="number"
-            value={formData.mt}
-            onChange={handleChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
+                 {/* voiture Selection (Div-based) */}
+   <div>
+            <label
+              htmlFor="worker"
+              className="block text-sm font-medium text-gray-700 pb-1"
+            >
+              Voiture
+            </label>
 
-        <div>
-          <label htmlFor="mp" className="block text-sm font-medium text-gray-700">
-            Montant Payer
-          </label>
-          <input
-            id="mp"
-            name="mp"
-            type="number"
-            value={formData.mp}
-            onChange={handleChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-
+            <select
+              id="car"
+              name="car"
+              value={formData.car}
+              onChange={handleChange}
+              className="mt-1 block w-full px-3 py-2 border bg-transparent border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="" disabled defaultChecked>
+                {" "}
+                Select Voiture
+              </option>
+              {cars.map((car, index) => (
+                <option key={index} value={car._id}>
+                  {car.model} -{" "}
+                  {car.bn}
+                </option>
+              ))}
+            </select>
+          </div>
+    
+    
         <div>
           <label htmlFor="nht" className="block text-sm font-medium text-gray-700">
             Nombre d&apos;heures Totale 
@@ -390,6 +452,38 @@ const ActivitiesFormupdate= ({ params }: { params: Promise<{ id: string }> }) =>
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
           />
         </div>
+
+        <div>
+          <label htmlFor="mp" className="block text-sm font-medium text-gray-700">
+            Montant Payer
+          </label>
+          <input
+            id="mp"
+            name="mp"
+            type="number"
+            value={formData.mp}
+            onChange={handleChange}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+          />
+        </div>
+
+
+        <div>
+          <label htmlFor="mt" className="block text-sm font-medium text-gray-700">
+            Montant Total
+          </label>
+          <input
+            id="mt"
+            name="mt"
+            type="number"
+            value={formData.mt}
+            disabled
+            onChange={handleChange}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+          />
+        </div>
+
+
               <div className='grid grid-rows-1 gap-2'>
         <button
             type="submit"

@@ -4,12 +4,14 @@ import ActiviteCounter from "./ActiviteCounter";
 import { ICustomer } from "./Customer";
 import { IWorker } from "./Worker";
 import { IActiviteType } from "./Activitetype";
+import { ICar } from "./Car";
 
 export interface IActivite extends Document {
   ref: string;
   customer: ICustomer|string;
   worker:IWorker|string
   activites: IActiviteType|string;
+  car: ICar|string;
   mt: string;
   mp: string;  // Changed to string to allow flexibility
   nht: string;
@@ -27,6 +29,7 @@ const ActiviteSchema: Schema = new Schema(
     customer: {type:mongoose.Schema.Types.ObjectId,ref:'Customer'},
     worker:{type:mongoose.Schema.Types.ObjectId,ref:'Worker'},
     activites: { type:mongoose.Schema.Types.ObjectId,ref:'ActiviteType'},
+    car: { type:mongoose.Schema.Types.ObjectId,ref:'Car'},
     mt: {type: String,required: false },
     mp: {type: String,required: false },  // Changed to string to allow flexibility
     nht: {type: String,required: false },

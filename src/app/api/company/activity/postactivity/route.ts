@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
     const {
         customer,
         activities,
+        car,
         mt,
         mp,
         nht,
@@ -92,10 +93,12 @@ export async function POST(req: NextRequest) {
         { status: 409 }
       );
     }
+
     await Activite.create({
       customer: existingCustomer,
       worker:existworker,
       activites:existtypeactivite, // Make sure this matches the schema as "activites"
+      car,
       mt,
       mp,
       nht,

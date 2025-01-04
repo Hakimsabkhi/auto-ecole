@@ -64,8 +64,8 @@ export async function GET(
     }).populate("customer").populate('activites').populate('worker','_id name') ;
     if (!existingaActivite) {
       return NextResponse.json(
-        { message: "Customer not found" },
-        { status: 404 }
+        { message: "Activite not found" },
+        { status: 408 }
       );
     }
 

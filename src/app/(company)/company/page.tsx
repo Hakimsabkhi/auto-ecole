@@ -66,6 +66,7 @@ const SchedulePage: React.FC = () => {
 
       const data = await response.json();
       
+      
       setActivitiestype(data);
     } catch (err: unknown) {
       console.error("Error fetching activitiestype:", err);
@@ -82,6 +83,7 @@ const SchedulePage: React.FC = () => {
       }
 
       const { existworking } = await response.json();
+      console.log(existworking)
       setWorkings(existworking); // Update state with fetched data
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -204,7 +206,7 @@ const SchedulePage: React.FC = () => {
       </div>
 
       {/* Schedule Grid */}
-      <div className="grid grid-cols-[80px_repeat(3,_1fr)] gap-2 w-full max-w-4xl">
+      <div className="grid grid-cols-[80px_repeat(3,_1fr)] gap-2 w-full max-w-4xl overflow-y-auto">
         {/* Hours Column */}
         <div className="bg-white p-2 text-center font-bold">Heures</div>
         {columns.map((col, i) => (
@@ -242,9 +244,9 @@ const matchingWorking = workings.find(
                 >
                   {matchingWorking ? (
                     <div className="overflow-y-scroll h-20">
-                      <div className="text-sm border-b-2">
+                      <div className="text-sm border-b-2 ">
                         
-                        {matchingWorking.activite.map((Activite, index) => (
+                        {matchingWorking.activite?.map((Activite, index) => (
                           <div key={index} className="grid grid-cols-2  bg-gray-500 p-2 border-b-2 gap-2">
                            <div className="flex flex-col justify-start items-start">
                            <span> A: {Activite.activites.name}</span>

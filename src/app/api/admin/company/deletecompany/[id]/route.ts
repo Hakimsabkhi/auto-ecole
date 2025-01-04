@@ -46,7 +46,7 @@ export async function DELETE(req: NextRequest, context: { params: Promise<{ id: 
     // Check if the Company exists
     const deletedCompany = await Company.findByIdAndDelete(id);
     if (!deletedCompany) {
-      return NextResponse.json({ message: ' Company not found' }, { status: 404 });
+      return NextResponse.json({ message: ' Company not found' }, { status: 408 });
     }
 
     // Return success response

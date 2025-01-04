@@ -23,6 +23,7 @@ interface Activite {
     ref: string;
     customer: Customer;
     activites: activitetype;
+    car:car;
     worker:worker;
     mt: string;
     mp: string;  // Changed to string to allow flexibility
@@ -30,6 +31,10 @@ interface Activite {
     nhe: string;
     dateexam: string;
     status:string;
+}
+interface car{
+  _id:string;
+  model:string;
 }
 interface worker {
   _id:string;
@@ -159,6 +164,9 @@ const ActiviteTable: React.FC = () => {
             Moniteur / Monitrice
             </th>
             <th className="px-4 py-2 text-left font-medium text-gray-600">
+            Voiteur
+            </th>
+            <th className="px-4 py-2 text-left font-medium text-gray-600">
               Client
             </th>
             <th className="px-4 py-2 text-left font-medium text-gray-600">
@@ -192,6 +200,7 @@ const ActiviteTable: React.FC = () => {
             
               <td className="py-2 px-4">{activity.activites.name} </td>
               <td className="py-2 px-4">{activity.worker.name} </td>
+              <td className="py-2 px-4">{activity.car.model} </td>
               <td className="py-2 px-4">{activity.customer.firstname} {activity.customer.lastname}</td>
               <td className="py-2 px-4  ">{activity.mt}</td>
               <td className="py-2 px-4">{activity.mp}</td>

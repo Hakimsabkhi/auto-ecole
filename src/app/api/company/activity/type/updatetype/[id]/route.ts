@@ -54,7 +54,7 @@ export async function PUT(
     // Validate the provided ID
     if (!id) {
       return NextResponse.json(
-        { message: "Invalid or missing Activite ID" },
+        { message: "Invalid or missing Activitetype ID" },
         { status: 400 }
       );
     }
@@ -66,8 +66,8 @@ export async function PUT(
     });
     if (!existingaActivitetype) {
       return NextResponse.json(
-        { message: "Customer not found" },
-        { status: 404 }
+        { message: "Activitetype not found" },
+        { status: 408 }
       );
     }
     if(name){
@@ -81,7 +81,7 @@ export async function PUT(
     // Return success response
     return NextResponse.json( { status: 200 });
   } catch (error) {
-    console.error("Error  existingaActivite:", error);
+    console.error("Error  Activitetype:", error);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }

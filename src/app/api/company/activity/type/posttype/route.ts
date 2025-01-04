@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           error:
-            "customerid activities mt nht  are required",
+            "Activitetype name prix  are required",
         },
         { status: 423 }
       );

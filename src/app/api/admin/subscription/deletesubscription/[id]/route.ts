@@ -46,7 +46,7 @@ export async function DELETE(req: NextRequest, context: { params: Promise<{ id: 
     // Check if the subscription exists
     const deletedSubscription = await Subscription.findByIdAndDelete(id);
     if (!deletedSubscription) {
-      return NextResponse.json({ message: 'Subscription not found' }, { status: 404 });
+      return NextResponse.json({ message: 'Subscription not found' }, { status: 409 });
     }
 
     // Return success response

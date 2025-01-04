@@ -48,7 +48,7 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
     if (!existingSubscription) {
       return NextResponse.json(
         { message: "Subscription not found" },
-        { status: 404 }
+        { status: 405 }
       );
     }
     if (name !== undefined && name !== null) {

@@ -47,7 +47,7 @@ export async function GET(req: NextRequest,context: { params: Promise<{ id: stri
     if (!existingCompany) {
       return NextResponse.json(
         { message: "company not found" },
-        { status: 404 }
+        { status: 406 }
       );
     }
   

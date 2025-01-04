@@ -1,6 +1,4 @@
 "use client";
-
-import Google from "next-auth/providers/google";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -20,6 +18,12 @@ interface Worker {
 interface Activitetype {
   _id: string;
   name: string;
+  prix:string;
+}
+interface car{
+  _id:string;
+  model:string;
+  bn:string;
 }
 const ActivitiesForm: React.FC = () => {
   const route = useRouter();
@@ -29,6 +33,8 @@ const ActivitiesForm: React.FC = () => {
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
   const [OpenCustomer, setOpenCustomer] = useState<boolean>(false);
   const [workers, setWorkers] = useState<Worker[]>([]);
+  const [cars, setCars] = useState<car[]>([]);
+  const [prix,setPrix]=useState(0);
   const fetchActivitytype = async () => {
     try {
       const response = await fetch("/api/company/activity/type/getalltype", {
@@ -91,6 +97,7 @@ const ActivitiesForm: React.FC = () => {
     nhe: 0,
     dateexam: "",
     worker: "",
+    car:"",
   });
 
   const handleChange = (
@@ -98,19 +105,27 @@ const ActivitiesForm: React.FC = () => {
   ) => {
     const { name, value } = e.target;
 
-    // Handle number fields separately to parse values correctly
-    setFormData({
+    const newFormData = {
       ...formData,
       [name]:
         name === "mt" || name === "mp" || name === "nht" || name === "nhe"
           ? parseFloat(value)
           : value,
-    });
+    };
+
+    // Calculate 'mt' (Montant Total) based on 'nht' (Nombre d'heures Totale) and 'prix'
+    if (name === "nht" || name === "activities") {
+      newFormData.mt = newFormData.nht * prix;
+    }
+
+    setFormData(newFormData);
   };
+
   const handleChangeactivities = async (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+
     // Handle number fields separately to parse values correctly
     setFormData({
       ...formData,
@@ -137,6 +152,41 @@ const ActivitiesForm: React.FC = () => {
         console.error("An unknown error occurred");
       }
     }
+    try {
+      const response = await fetch(
+        `/api/company/car/getallcar/`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch workers");
+      }
+      
+      const data = await response.json();
+      setCars(data);
+    
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error("An unknown error occurred");
+      }
+    }
+    try {
+      const response = await fetch(`/api/company/activity/type/gettype/${value}`)
+      if (!response.ok) {
+        throw new Error("Failed to fetch activite type");
+      }
+      
+      const {existingatype} = await response.json();
+      setPrix(existingatype.prix);
+    
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error(err.message);
+      } else {
+        console.error("An unknown error occurred");
+      }
+    }
+    
   };
 
   const handleSearchCustomers = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -194,6 +244,7 @@ const ActivitiesForm: React.FC = () => {
         nhe: 0,
         dateexam: "",
         worker: "",
+        car: "",
       });
       route.push("/company/activitie");
     } catch (err) {
@@ -276,7 +327,7 @@ const ActivitiesForm: React.FC = () => {
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 border bg-transparent border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             >
-              <option value="" disabled>
+              <option value="" >
                 {" "}
                 Select Moniteur
               </option>
@@ -288,39 +339,35 @@ const ActivitiesForm: React.FC = () => {
               ))}
             </select>
           </div>
-          <div>
+           {/* voiture Selection (Div-based) */}
+   <div>
             <label
-              htmlFor="mt"
-              className="block text-sm font-medium text-gray-700"
+              htmlFor="worker"
+              className="block text-sm font-medium text-gray-700 pb-1"
             >
-              Montant Total
+              Voiture
             </label>
-            <input
-              id="mt"
-              name="mt"
-              type="number"
-              value={formData.mt}
+
+            <select
+              id="car"
+              name="car"
+              value={formData.car}
               onChange={handleChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            />
-          </div>
-       
-          <div>
-            <label
-              htmlFor="mp"
-              className="block text-sm font-medium text-gray-700"
+              className="mt-1 block w-full px-3 py-2 border bg-transparent border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             >
-              Montant Payer
-            </label>
-            <input
-              id="mp"
-              name="mp"
-              type="number"
-              value={formData.mp}
-              onChange={handleChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            />
+              <option value="" disabled defaultChecked>
+                {" "}
+                Select Voiture
+              </option>
+              {cars.map((car, index) => (
+                <option key={index} value={car._id}>
+                  {car.model} -{" "}
+                  {car.bn}
+                </option>
+              ))}
+            </select>
           </div>
+    
 
           <div>
             <label
@@ -355,7 +402,41 @@ const ActivitiesForm: React.FC = () => {
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             />
           </div>
-
+       
+       
+          <div>
+            <label
+              htmlFor="mp"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Montant Payer
+            </label>
+            <input
+              id="mp"
+              name="mp"
+              type="number"
+              value={formData.mp}
+              onChange={handleChange}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="mt"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Montant Total
+            </label>
+            <input
+              disabled
+              id="mt"
+              name="mt"
+              type="number"
+              value={formData.mt}
+              onChange={handleChange}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
           <div>
             <label
               htmlFor="dateexam"

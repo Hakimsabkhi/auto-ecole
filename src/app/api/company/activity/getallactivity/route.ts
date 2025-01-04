@@ -6,6 +6,7 @@ import Customer from "@/models/Customer";
 import Activite from "@/models/Activite";
 import Activitetype from "@/models/Activitetype";
 import Worker from "@/models/Worker";
+import Car from "@/models/Car";
 async function getUserFromToken(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   if (!token) {
@@ -33,9 +34,11 @@ export async function GET(req: NextRequest) {
     await Customer.find();
     await Activitetype.find();
     await Worker.find();
+    await Car.find();
     const activite = await Activite.find({ company: result.user._id })
     .populate('customer') 
-    .populate('activites') 
+    .populate('activites')
+    .populate('car') 
     .populate('worker')// Ensure 'Customer' is the correct field name in the schema
     .exec();  // Adding .exec() is optional, but it explicitly returns a promise
   

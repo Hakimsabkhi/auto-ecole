@@ -49,7 +49,7 @@ await ActiviteTable.find();
     if (!existingWorker) {
       return NextResponse.json(
         { message: "worker not found" },
-        { status: 404 }
+        { status: 408 }
       );
     }
   
