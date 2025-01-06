@@ -1,12 +1,12 @@
 import { formatTime } from "@/lib/timeforma";
 import React, { useEffect, useState } from "react";
 
-interface Activite {
+interface Task {
   _id: string;
   ref: string;
   customer: Customer;
   worker: Worker;
-  activites: ActiviteType;
+  activites: Activite;
   mt: string;
   mp: string;
   nht: string;
@@ -26,7 +26,7 @@ interface Worker {
   name: string;
 }
 
-interface ActiviteType {
+interface Activite {
   _id: string;
   name: string;
 }
@@ -41,36 +41,36 @@ interface ActivitepoppupProp {
 }
 
 const Activitepoppup: React.FC<ActivitepoppupProp> = ({ close, dh, fetchworking }) => {
-  const [activitiess, setActivitiess] = useState<Activite[]>([]); // All activities
-  const [activities, setActivities] = useState<Activite[]>([]);   // Filtered activities (as an array)
+  const [activitiess, setActivitiess] = useState<Task[]>([]); // All activities
+  const [activities, setActivities] = useState<Task[]>([]);   // Filtered activities (as an array)
   const [searchTerm, setSearchTerm] = useState("");  // For search term
   const [selectedActivityType, setSelectedActivityType] = useState<string>("");
 
-  const [activitiestype, setActivitiestype] = useState<ActiviteType[]>([]);
+  const [activitiestype, setActivitiestype] = useState<Activite[]>([]);
 
   // Fetch all activities for a specific activity type
   const fetchActivity = async (id: string) => {
     try {
-      const response = await fetch(`/api/company/activity/getactivitybystudy/${id}`);
-      if (!response.ok) throw new Error("Failed to fetch activities");
+      const response = await fetch(`/api/company/task/gettaskbystudy/${id}`);
+      if (!response.ok) throw new Error("Failed to fetch task");
 
       const { existingaActivite } = await response.json();
       setActivitiess(existingaActivite);
     } catch (err: unknown) {
-      console.error("Error fetching activities:", err);
+      console.error("Error fetching task:", err);
     }
   };
 
   // Fetch all activity types
   const fetchActivitytype = async () => {
     try {
-      const response = await fetch(`/api/company/activity/type/getalltype`);
-      if (!response.ok) throw new Error("Failed to fetch activity types");
+      const response = await fetch(`/api/company/task/activite/getallactivite`);
+      if (!response.ok) throw new Error("Failed to fetch activite");
 
       const data = await response.json();
       setActivitiestype(data);
     } catch (err: unknown) {
-      console.error("Error fetching activity types:", err);
+      console.error("Error fetching activite :", err);
     }
   };
 
@@ -96,7 +96,7 @@ const Activitepoppup: React.FC<ActivitepoppupProp> = ({ close, dh, fetchworking 
   };
 
   // Handle selecting an activity
-  const handleActiviteSelect = (activity: Activite) => {
+  const handleActiviteSelect = (activity: Task) => {
     const str = `${activity.ref} ${activity.customer.firstname} ${activity.customer.lastname}`;
     setSearchTerm(str);
     setActivities([activity]); // Show only the selected activity as an array
@@ -119,7 +119,7 @@ const Activitepoppup: React.FC<ActivitepoppupProp> = ({ close, dh, fetchworking 
     };
 
     try {
-      const response = await fetch("/api/company/working/postworking", {
+      const response = await fetch("/api/company/dealings/postdealings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -131,7 +131,7 @@ const Activitepoppup: React.FC<ActivitepoppupProp> = ({ close, dh, fetchworking 
         fetchworking();
         close(); // Close the popup
       } else {
-        throw new Error("Failed to submit activities.");
+        throw new Error("Failed to submit dealings.");
       }
     } catch (err: unknown) {
       if (err instanceof Error) {

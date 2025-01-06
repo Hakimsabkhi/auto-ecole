@@ -3,7 +3,7 @@ import connectToDatabase from '@/lib/db';
 import { getToken } from 'next-auth/jwt';
 import Company from '@/models/Company';
 import Worker from '@/models/Worker';
-import ActiviteTable from '@/models/Activitetype';
+import ActiviteTable from '@/models/Activite';
 async function getUserFromToken(req: NextRequest) {
   try {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });

@@ -12,10 +12,10 @@ interface Customer {
 interface Worker {
   _id: string;
   name: string;
-  formateur: Activitetype[];
+  formateur: Activite[];
 }
 
-interface Activitetype {
+interface Activite {
   _id: string;
   name: string;
   prix:string;
@@ -27,7 +27,7 @@ interface car{
 }
 const ActivitiesForm: React.FC = () => {
   const route = useRouter();
-  const [options, setOptions] = useState<Activitetype[]>([]);
+  const [options, setOptions] = useState<Activite[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
@@ -35,9 +35,9 @@ const ActivitiesForm: React.FC = () => {
   const [workers, setWorkers] = useState<Worker[]>([]);
   const [cars, setCars] = useState<car[]>([]);
   const [prix,setPrix]=useState(0);
-  const fetchActivitytype = async () => {
+  const fetchActivity = async () => {
     try {
-      const response = await fetch("/api/company/activity/type/getalltype", {
+      const response = await fetch("/api/company/task/activite/getallactivite", {
         method: "GET",
       });
 
@@ -58,7 +58,7 @@ const ActivitiesForm: React.FC = () => {
 
   // Fetch workers on initial render
   useEffect(() => {
-    fetchActivitytype();
+    fetchActivity();
   }, []);
 
   // Fetch workers on initial render
@@ -171,7 +171,7 @@ const ActivitiesForm: React.FC = () => {
       }
     }
     try {
-      const response = await fetch(`/api/company/activity/type/gettype/${value}`)
+      const response = await fetch(`/api/company/task/activite/getactivite/${value}`)
       if (!response.ok) {
         throw new Error("Failed to fetch activite type");
       }
@@ -223,7 +223,7 @@ const ActivitiesForm: React.FC = () => {
 
     // Submit form data to the API or handle as needed
     try {
-      const response = await fetch("/api/company/activity/postactivity", {
+      const response = await fetch("/api/company/task/posttask", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -232,7 +232,7 @@ const ActivitiesForm: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to submit activity form");
+        throw new Error("Failed to submit task form");
       }
 
       setFormData({

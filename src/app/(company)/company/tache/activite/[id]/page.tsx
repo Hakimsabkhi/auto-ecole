@@ -35,7 +35,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
             console.log(unwrappedParams)   
        const fetchActivity= async () => {
           try {
-            const response = await fetch(`/api/company/activity/type/gettype/${unwrappedParams?.id}`);
+            const response = await fetch(`/api/company/task/activite/getactivite/${unwrappedParams?.id}`);
         
               if (!response.ok) {
                 throw new Error("Failed to fetch workers");
@@ -82,7 +82,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
     // Submit form data to the API or handle as needed
     try {
-      const response = await fetch(`/api/company/activity/type/updatetype/${unwrappedParams?.id}`, {
+      const response = await fetch(`/api/company/task/activite/updateactivite/${unwrappedParams?.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to submit activity form");
+        throw new Error("Failed to submit activit form");
       }
 
       // Reset form data after successful submission
@@ -110,7 +110,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
 
   return (
     <div className="p-4 w-full bg-white rounded-lg shadow-lg">
-      <h2 className="text-xl font-semibold text-center mb-6">Activity Prix Update</h2>
+      <h2 className="text-xl font-semibold text-center mb-6">Activity  Update</h2>
       <form onSubmit={handleUpdate} className="space-y-4">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">

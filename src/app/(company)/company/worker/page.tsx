@@ -11,9 +11,9 @@ interface Worker {
   name: string;
   username: string;
   phone: string;
-  formateur: activitytype[];
+  formateur: activity[];
 }
-interface activitytype {
+interface activity{
   _id: string;
   name: string;
 }

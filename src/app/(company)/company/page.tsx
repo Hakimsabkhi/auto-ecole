@@ -2,24 +2,24 @@
 import Activitepoppup from "@/components/Company/Activitepoppup";
 import PopupDelete from "@/components/popup/DeletePopup";
 import { extractHour, formatDatetodate } from "@/lib/timeforma";
-import Activite from "@/models/Activite";
+import Activite from "@/models/Task";
 import React, { useEffect, useState } from "react";
 import { BiX } from "react-icons/bi";
 
-interface Working {
+interface dealings {
   _id: string;
   date: string;
-  activite: Activite;
+  activite: task;
   hstart: string;
   hfinish: string;
 }
 
-interface Activite {
+interface task {
   _id: string;
   ref: string;
   customer: Customer;
   worker: Worker;
-  activites: ActiviteType;
+  activites: Activite;
   mt: string;
   mp: string;
   nht: string;
@@ -39,7 +39,7 @@ interface Worker {
   name: string;
 }
 
-interface ActiviteType {
+interface Activite {
   _id: string;
   name: string;
 }
@@ -48,11 +48,11 @@ const SchedulePage: React.FC = () => {
   const hours = Array.from({ length: 14 }, (_, i) => `${i + 7}:00`);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [openaddactivite, setOpenaddactivite] = useState(false);
-  const [workings, setWorkings] = useState<Working[]>([]);
-  const [activitiestype, setActivitiestype] = useState<ActiviteType[]>([]);
+  const [workings, setWorkings] = useState<dealings[]>([]);
+  const [activitiestype, setActivitiestype] = useState<Activite[]>([]);
   const [selectedActivityType, setSelectedActivityType] = useState<string>("");
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-   const [selected, setSelected] = useState<Working | null>(null);
+   const [selected, setSelected] = useState<dealings | null>(null);
   const [dh, setDh] = useState<{ dates: string; houer: string }>({
     dates: "",
     houer: "",
@@ -68,22 +68,22 @@ const SchedulePage: React.FC = () => {
 
   const fetchActivitytype = async () => {
     try {
-      const response = await fetch(`/api/company/activity/type/getalltype`);
-      if (!response.ok) throw new Error("Failed to fetch activitietype");
+      const response = await fetch(`/api/company/task/activite/getallactivite`);
+      if (!response.ok) throw new Error("Failed to fetch activitie");
 
       const data = await response.json();
       setActivitiestype(data);
     } catch (err) {
-      console.error("Error fetching activitiestype:", err);
+      console.error("Error fetching activities:", err);
     }
   };
 
   const fetchworking = async () => {
     try {
-      const response = await fetch("/api/company/working/getworking");
+      const response = await fetch("/api/company/dealings/getdealings");
 
       if (!response.ok) {
-        throw new Error("Failed to fetch working");
+        throw new Error("Failed to fetch dealings");
       }
 
       const { existworking } = await response.json();
@@ -97,7 +97,7 @@ const SchedulePage: React.FC = () => {
     }
   };
    
-  const handleDeleteClick = (working: Working) => {
+  const handleDeleteClick = (working: dealings) => {
     setSelected(working);
     setIsPopupOpen(true);
   };
@@ -164,14 +164,14 @@ const SchedulePage: React.FC = () => {
   const deleteworking = async (workingid: string) => {
     try {
       const response = await fetch(
-        `/api/company/working/deleteworking/${workingid}`,
+        `/api/company/dealings/deletedealings/${workingid}`,
         {
           method: "DELETE",
         }
       );
 
       if (!response.ok) {
-        throw new Error("Failed to delete working");
+        throw new Error("Failed to delete dealings");
       }
       fetchworking();
       console.log("Deleted successfully");

@@ -14,10 +14,10 @@ interface Customer {
 interface Worker {
   _id: string;
   name: string;
-  formateur: Activitetype[];
+  formateur: Activite[];
 }
 
-interface Activitetype {
+interface Activite {
   _id: string;
   name: string;
 }
@@ -33,7 +33,7 @@ const TacheFormupdate= ({ params }: { params: Promise<{ id: string }> }) => {
  const [searchTerm, setSearchTerm] = useState('');
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
   const [OpenCustomer,setOpenCustomer]=useState<boolean>(false);
-    const [options, setOptions] = useState<Activitetype[]>([]);
+    const [options, setOptions] = useState<Activite[]>([]);
    const [workers, setWorkers] = useState<Worker[]>([]);
     const [cars, setCars] = useState<car[]>([]);
      const [prix,setPrix]=useState(0);
@@ -88,12 +88,12 @@ const TacheFormupdate= ({ params }: { params: Promise<{ id: string }> }) => {
   };
   const fetchActivitytype = async () => {
     try {
-      const response = await fetch("/api/company/activity/type/getalltype", {
+      const response = await fetch("/api/company/task/activite/getallactivite", {
         method: "GET",
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch workers");
+        throw new Error("Failed to fetch activite");
       }
 
       const data = await response.json();
@@ -114,10 +114,10 @@ const TacheFormupdate= ({ params }: { params: Promise<{ id: string }> }) => {
      
  const fetchActivity= async () => {
     try {
-      const response = await fetch(`/api/company/activity/getactivity/${unwrappedParams?.id}`);
+      const response = await fetch(`/api/company/task/gettask/${unwrappedParams?.id}`);
 
       if (!response.ok) {
-        throw new Error("Failed to fetch workers");
+        throw new Error("Failed to fetch task");
       }
 
       const {existingaActivite} = await response.json(); // Update state with fetched data
@@ -191,9 +191,9 @@ async function hendercar(){
 };
 async function henderprix(value:string){
 try {
-  const response = await fetch(`/api/company/activity/type/gettype/${value}`)
+  const response = await fetch(`/api/company/task/activite/getactivite/${value}`)
   if (!response.ok) {
-    throw new Error("Failed to fetch activite type");
+    throw new Error("Failed to fetch activite ");
   }
   console.log(value)
   const {existingatype} = await response.json();
@@ -267,7 +267,7 @@ try {
 
     // Submit form data to the API or handle as needed
     try {
-      const response = await fetch(`/api/company/activity/updateactivity/${unwrappedParams?.id}`, {
+      const response = await fetch(`/api/company/task/updatetask/${unwrappedParams?.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -276,7 +276,7 @@ try {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to submit activity form");
+        throw new Error("Failed to submit task form");
       }
 
    

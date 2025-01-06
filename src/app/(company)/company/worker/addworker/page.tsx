@@ -2,23 +2,23 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState ,useEffect} from "react";
-  interface activitytype{
+  interface activite{
     _id:string;
     name:string;
   }
 const Page = () => {
   const router = useRouter();
-  const [predefinedActivities ,setPredefinedAcrivities ]= useState<activitytype[]>([]);
+  const [predefinedActivities ,setPredefinedAcrivities ]= useState<activite[]>([]);
   const [formData, setFormData] = useState({
     name: "",
     username: "",
     phone: "",
     password: "",
-    formateur: [] as activitytype[],
+    formateur: [] as activite[],
   });
 const fetchActivitytype= async () => {
     try {
-      const response = await fetch("/api/company/activity/type/getalltype", {
+      const response = await fetch("/api/company/task/activite/getallactivite", {
         method: 'GET'})
 
       if (!response.ok) {
@@ -51,7 +51,7 @@ const fetchActivitytype= async () => {
     });
   };
 
-  const handleAddFormateur = (formateur: activitytype) => {
+  const handleAddFormateur = (formateur: activite) => {
     if (!formData.formateur.includes(formateur)) {
       setFormData((prev) => ({
         ...prev,
@@ -60,7 +60,7 @@ const fetchActivitytype= async () => {
     }
   };
 
-  const handleRemoveFormateur = (formateur: activitytype) => {
+  const handleRemoveFormateur = (formateur: activite) => {
     setFormData((prev) => ({
       ...prev,
       formateur: prev.formateur.filter((item) => item !== formateur),

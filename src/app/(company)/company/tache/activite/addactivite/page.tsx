@@ -32,7 +32,7 @@ const Page = () => {
 
     // Submit form data to the API or handle as needed
     try {
-      const response = await fetch('/api/company/activity/type/posttype', {
+      const response = await fetch('/api/company/task/activite/postactivite', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ const Page = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to submit activity form");
+        throw new Error("Failed to submit activite form");
       }
 
       // Reset form data after successful submission
@@ -51,7 +51,7 @@ const Page = () => {
       });
 
       // Redirect to the add activity page
-      route.push('/company/tache/prix');
+      route.push('/company/tache/activite');
     } catch (err) {
       console.error("Error submitting form:", err);
       alert("An error occurred while submitting the form.");

@@ -22,7 +22,7 @@ const ActiviteTable: React.FC = () => {
  
   const fetchActivitytype= async () => {
     try {
-      const response = await fetch("/api/company/activity/type/getalltype", {
+      const response = await fetch("/api/company/task/activite/getallactivite", {
         method: 'GET'})
 
       if (!response.ok) {
@@ -59,22 +59,22 @@ const ActiviteTable: React.FC = () => {
   const deleteactivitytype = async (activiteid: string) => {
     try {
       const response = await fetch(
-        `/api/company/activity/type/deletetype/${activiteid}`,
+        `/api/company/task/activite/deleteactivite/${activiteid}`,
         {
           method: "DELETE",
         }
       );
 
       if (!response.ok) {
-        throw new Error("Failed to delete customer");
+        throw new Error("Failed to delete activite");
       }
       fetchActivitytype();
       console.log("Deleted successfully");
     } catch (err: unknown) {
       if (err instanceof Error) {
-        console.error(`Failed to delete customer: ${err.message}`);
+        console.error(`Failed to delete activite: ${err.message}`);
       } else {
-        console.error("Failed to delete customer: Unknown error");
+        console.error("Failed to delete activite: Unknown error");
       }
     } finally {
       handleClosePopup();

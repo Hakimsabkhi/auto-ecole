@@ -1,12 +1,12 @@
 import mongoose, { Document, Schema } from "mongoose";
 import { ICompany } from "./Company";
-import {IActiviteType} from "./Activitetype";
+import {IActivite} from "./Activite";
 export interface IWorker extends Document {
   name: string;
   username: string;
   phone: string;
   password?: number;
-  formateur:IActiviteType[]|string[];
+  formateur:IActivite[]|string[];
   company: ICompany | string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -18,7 +18,7 @@ const WorkerSchema: Schema = new Schema(
     username: { type: String, required: true },
     phone: { type: Number },
     password: { type: String },
-    formateur: [{ type: mongoose.Schema.Types.ObjectId, ref: "ActiviteType" }], // Allowing multiple activity type references
+    formateur: [{ type: mongoose.Schema.Types.ObjectId, ref: "Activite" }], // Allowing multiple activity type references
     company: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },
   },
   { timestamps: true }

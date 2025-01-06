@@ -4,14 +4,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-interface ActivityType {
+interface Activite {
   _id: string;
   name: string;
 }
 
 const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
   const [unwrappedParams, setUnwrappedParams] = useState<{ id: string } | null>(null);
-  const [predefinedActivities, setPredefinedActivities] = useState<ActivityType[]>([]);
+  const [predefinedActivities, setPredefinedActivities] = useState<Activite[]>([]);
   const route = useRouter();
 
   const [formData, setFormData] = useState({
@@ -19,7 +19,7 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
     username: "",
     phone: "",
     password: "",
-    formateur: [] as ActivityType[],
+    formateur: [] as Activite[],
   });
 
   // Unwrap params on mount
@@ -39,7 +39,7 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
   // Fetch activities
   const fetchActivityType = async () => {
     try {
-      const response = await fetch("/api/company/activity/type/getalltype", {
+      const response = await fetch("/api/company/task/activite/getallactivite", {
         method: "GET",
       });
 
@@ -99,7 +99,7 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
   };
 
   // Add formateur
-  const handleAddFormateur = (activity: ActivityType) => {
+  const handleAddFormateur = (activity: Activite) => {
     if (activity && !formData.formateur.includes(activity)) {
       setFormData((prev) => ({
         ...prev,
@@ -109,7 +109,7 @@ const UpdateWorker = ({ params }: { params: Promise<{ id: string }> }) => {
   };
 
   // Remove formateur
-  const handleRemoveFormateur = (activity: ActivityType) => {
+  const handleRemoveFormateur = (activity: Activite) => {
     setFormData((prev) => ({
       ...prev,
       formateur: prev.formateur.filter((act) => act !== activity),

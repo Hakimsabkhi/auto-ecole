@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/db';
 import { getToken } from 'next-auth/jwt';
+import Dealings from '@/models/Dealings';
 import Company from '@/models/Company';
-import Worker from '@/models/Worker';
-import Activite from '@/models/Activite';
+
 async function getUserFromToken(req: NextRequest) {
   try {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
@@ -12,7 +12,7 @@ async function getUserFromToken(req: NextRequest) {
     }
 
     // Fetch the user from the Admin model based on the token email
-    const user = await Company.findById({ _id: token.id  }).exec();
+    const user = await Company.findById({ _id: token.id }).exec();
     if (!user) {
       return { error: 'User not found', status: 404 };
     }
@@ -20,15 +20,15 @@ async function getUserFromToken(req: NextRequest) {
     return { user };
   } catch (error) {
     console.error('Error fetching user from token:', error);
-    return { error: 'Internal server error', status: 501 };
+    return { error: 'Internal server error', status: 500 };
   }
 }
 
-export async function GET(req: NextRequest,context: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: NextRequest, context: { params:Promise<{ id: string }> }) {
   try {
     // Wait for params to be available
-    const { id } = await context.params; // Ensure params is awaited before use
-
+   // Ensure params is awaited before use
+   const { id } = await context.params;
     // Connect to the database
     await connectToDatabase();
 
@@ -40,25 +40,22 @@ export async function GET(req: NextRequest,context: { params: Promise<{ id: stri
 
     // Validate the provided ID
     if (!id) {
-      return NextResponse.json({ message: 'Invalid or missing worker ID' }, { status: 400 });
+      return NextResponse.json({ message: 'Invalid or missing Working ID' }, { status: 400 });
     }
-
-await Activite.find();
-        // Check if the worker exist
-    const existingWorker= await Worker.findOne({_id:id,company:result.user._id}).populate('formateur');
-    if (!existingWorker) {
-      return NextResponse.json(
-        { message: "worker not found" },
-        { status: 408 }
-      );
+    const existingWorking= await Dealings.findOne({_id:id,company:result.user._id});
+    if(!existingWorking){
+        return NextResponse.json({ message: '  Working not exist ' }, { status: 405 });
     }
-  
-   
+    // Check if the worker exists
+    const deletedWorking= await Dealings.findByIdAndDelete(id);
+    if (!deletedWorking) {
+      return NextResponse.json({ message: ' Working not found deleting' }, { status: 406 });
+    }
 
     // Return success response
-    return NextResponse.json({existingWorker }, { status: 200 });
+    return NextResponse.json({ message: 'Working deleted successfully' }, { status: 200 });
   } catch (error) {
-    console.error('Error  Worker:', error);
+    console.error('Error deleting Working:', error);
     return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
   }
 }

@@ -18,11 +18,11 @@ interface Customer {
   address:string
  
 }
-interface Activite {
+interface Task {
   _id:string;
     ref: string;
     customer: Customer;
-    activites: activitetype;
+    activites: activite;
     car:car;
     worker:worker;
     mt: string;
@@ -41,18 +41,18 @@ interface worker {
   _id:string;
   name:string;
 }
-interface activitetype{
+interface activite{
   _id:string;
   name:string;
 }
 const ActiviteTable: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [activitys, setActivitys] = useState<Activite[]>([]);
-    const [selected, setSelected] = useState<Activite | null>(null);
+  const [activitys, setActivitys] = useState<Task[]>([]);
+    const [selected, setSelected] = useState<Task | null>(null);
  
   const fetchActivity= async () => {
     try {
-      const response = await fetch("/api/company/activity/getallactivity");
+      const response = await fetch("/api/company/task/getalltask");
 
       if (!response.ok) {
         throw new Error("Failed to fetch workers");
@@ -75,8 +75,8 @@ const ActiviteTable: React.FC = () => {
     fetchActivity();
   }, []);
  
-  const handleDeleteClick = (activite: Activite) => {
-    setSelected(activite);
+  const handleDeleteClick = (task: Task) => {
+    setSelected(task);
     setIsPopupOpen(true);
   };
   const handleClosePopup = () => {
@@ -87,7 +87,7 @@ const ActiviteTable: React.FC = () => {
   const updateStatus = async (event: React.ChangeEvent<HTMLSelectElement>,activiteid:string) => {
     const status = event.target.value;
     try {
-      const response = await fetch(`/api/company/activity/updateactivitystatus/${activiteid}`, {
+      const response = await fetch(`/api/company/task/updatetaskstatus/${activiteid}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ const ActiviteTable: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to submit activity form");
+        throw new Error("Failed to submit task form");
       }
 
    
@@ -112,7 +112,7 @@ const ActiviteTable: React.FC = () => {
   const deleteactivity = async (activiteid: string) => {
     try {
       const response = await fetch(
-        `/api/company/activity/deleteactivity/${activiteid}`,
+        `/api/company/task/deletetask/${activiteid}`,
         {
           method: "DELETE",
         }
@@ -201,7 +201,7 @@ const ActiviteTable: React.FC = () => {
             
               <td className="py-2 px-4">{activity.activites.name} </td>
               <td className="py-2 px-4">{activity.worker.name} </td>
-              <td className="py-2 px-4">{activity.car.model}{' '} {activity.car.bn} </td>
+              <td className="py-2 px-4"> {activity.car ? `${activity.car.model} ${activity.car.bn}` : 'N/A'} </td>
               <td className="py-2 px-4">{activity.customer.firstname} {activity.customer.lastname}</td>
               <td className="py-2 px-4  ">{activity.mt}</td>
               <td className="py-2 px-4">{activity.mp}</td>
