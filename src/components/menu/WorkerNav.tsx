@@ -1,15 +1,19 @@
 "use client"
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import React from 'react'
 
 
 const WorkerNav = () => {
+const   { data: session } = useSession()
+
   return (
     <>
-    <nav className="bg-[#f7f7f8] h-screen-[100%]  min-w-[250px] py-6 px-4 font-[sans-serif]">
+    <nav className="bg-[#f7f7f8] h-screen  min-w-[250px] py-6 px-4 font-[sans-serif]">
+   
+    <h1 className='font-bold pl-6 text-3xl uppercase text-blue-700'>{session?.user.name}</h1>
 
-  
     <div className="overflow-auto py-6 h-full mt-4">
+   
       <ul className="space-y-1">
         <li>
           <a 

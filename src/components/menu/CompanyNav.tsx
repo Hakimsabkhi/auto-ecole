@@ -1,5 +1,5 @@
 "use client"
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import React from 'react'
 import { IoListCircle } from 'react-icons/io5'
@@ -9,11 +9,13 @@ import { RiPoliceCarLine } from 'react-icons/ri'
 
 
 const CompanyNav = () => {
+  const   { data: session } = useSession()
   return (
     <>
 
     <nav className="bg-[#f7f7f8] h-screen min-w-[280px] py-6 px-4 font-[sans-serif] ">
-
+      
+    <h1 className='font-bold pl-6 text-3xl uppercase text-blue-700'>{session?.user.name}</h1>
   
     <div className="overflow-auto py-6 h-full mt-4">
       <ul className="space-y-1">

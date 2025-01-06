@@ -260,11 +260,11 @@ const SchedulePage: React.FC = () => {
               // Find all matching working activities for the specific date and hour
               const matchingWorkings = workings.filter(
                 (work) =>
-                  formatDatetodate(work.date).date === col.date &&
+                  formatDatetodate(work.date).date === col.date &&  
                   extractHour(work.hstart) === hour &&
                   (selectedActivityType
                     ? work.activite.activites._id === selectedActivityType
-                    : true)
+                    : true) 
               );
 
              
@@ -274,6 +274,7 @@ const SchedulePage: React.FC = () => {
               
               {matchingWorkings.length>0 ? (
                 <>
+                 
                       <div className="overflow-x-scroll h-24 w-56">
                         <div className="text-sm border-b-2 grid grid-flow-col ">
                           {matchingWorkings.map((matchingWork, idx) => (
