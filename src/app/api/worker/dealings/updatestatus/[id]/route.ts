@@ -61,7 +61,7 @@ if (!existingcompany){
  if(!existActivite){
   return NextResponse.json({ message: '  Working not exist ' }, { status: 408 });
 }
-console.log(existActivite);
+
     if(button==="yes"){
       existActivite.nhe=Number(existActivite.nhe)+1;
       existActivite.save();
