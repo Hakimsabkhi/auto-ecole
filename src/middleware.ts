@@ -49,7 +49,13 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL('/', req.url));
     }
   }
-
+  if (req.nextUrl.pathname.startsWith('/accountant')) {
+    const userRole = token?.role;
+  
+    if (userRole !== 'Accountant' ) {
+      return NextResponse.redirect(new URL('/', req.url));
+    }
+  }
   return NextResponse.next();
 }
 
@@ -58,6 +64,7 @@ export const config = {
     '/admin/:path*',
     '/company/:path*',
     '/worker/:path*',
+    '/accountant/:path*',
   ],
 
 };

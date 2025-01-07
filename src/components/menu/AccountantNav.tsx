@@ -3,15 +3,14 @@ import { signOut, useSession } from 'next-auth/react'
 import React from 'react'
 
 
-const WorkerNav = () => {
+const AccountantNav = () => {
 const   { data: session } = useSession()
 
   return (
     <>
     <nav className="bg-[#f7f7f8] h-screen  min-w-[250px] py-6 px-4 font-[sans-serif]">
-   <div className='flex flex-col justify-center items-center'>
-    <h1 className='font-bold pl-6 text-3xl uppercase text-blue-800'>Moniteur </h1>
-
+      <div className='flex flex-col justify-center items-center'>
+    <h1 className='font-bold pl-6 text-3xl uppercase text-blue-800'>Comptable:</h1>
     <h1 className='font-bold pl-6 text-3xl uppercase text-blue-700'>{session?.user.name}</h1>
     </div>
     <div className="overflow-auto py-6 h-full mt-4">
@@ -51,4 +50,4 @@ const   { data: session } = useSession()
   )
 }
 
-export default WorkerNav
+export default AccountantNav

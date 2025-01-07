@@ -5,6 +5,7 @@ import connectToDatabase from "@/lib/db";
 import Admin from "@/models/Admin";
 import Company from "@/models/Company";
 import Worker from "@/models/Worker";
+import Accountant from "@/models/Accountant";
 
 declare module "next-auth" {
   interface Session {
@@ -12,13 +13,13 @@ declare module "next-auth" {
       id: string;
       name?: string | null;
       username?: string | null;
-      role?: "Company" | "Worker" | "Admin";
+      role?: "Company" | "Worker" |"Accountant"| "Admin";
     } & DefaultSession["user"];
   }
 
   interface User {
     id: string;
-    role: "Company" | "Worker" | "Admin";
+    role: "Company" | "Worker" | "Accountant"| "Admin";
   }
 }
 
@@ -100,6 +101,22 @@ export const authOptions: NextAuthOptions = {
               role: "Worker",
             } as User;
           }
+          const accountant = await Accountant.findOne({ username: credentials.username }).exec();
+          if (accountant) {
+            console.log("Accountant found:", accountant);
+            const isPasswordValid = bcrypt.compareSync(credentials.password, accountant.password || "");
+            if (!isPasswordValid) {
+              console.error("Invalid password for Accountant username:", credentials.username);
+              return null;
+            }
+            return {
+              id: accountant._id.toString(),
+              name: accountant.name,
+              username: accountant.username,
+              role: "Accountant",
+            } as User;
+          }
+
 
           console.error("No entity found with this username:", credentials.username);
           return null;
@@ -123,7 +140,7 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         console.log("Session callback - Token info:", token);  // Log token data in session callback
         session.user.id = token.id as string;
-        session.user.role = token.role as "Company" | "Worker" | "Admin";
+        session.user.role = token.role as "Company" | "Worker" |"Accountant"| "Admin";
       }
       return session;
     },

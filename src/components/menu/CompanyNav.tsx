@@ -3,6 +3,7 @@ import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import React from 'react'
 import { IoListCircle } from 'react-icons/io5'
+import { MdOutlineSupervisorAccount } from 'react-icons/md'
 
 import { RiPoliceCarLine } from 'react-icons/ri'
 
@@ -54,6 +55,14 @@ const CompanyNav = () => {
             </svg>
              
             <span>List Cilent</span>
+          </Link>
+        </li>
+        <li>
+          <Link href={"/company/accountant"}
+            className="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+<MdOutlineSupervisorAccount className='w-[23px] h-[23px] mr-2' />
+             
+            <span>List Comptable</span>
           </Link>
         </li>
 

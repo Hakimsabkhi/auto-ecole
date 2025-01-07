@@ -39,6 +39,8 @@ const SignInPage = () => {
         router.push('/company');
       } else if (session.user.role === "Worker") {
         router.push('/worker');
+      }else if (session.user.role === "Accountant") {
+        router.push('/accountant');
       }
     }
   }, [session, router]);
