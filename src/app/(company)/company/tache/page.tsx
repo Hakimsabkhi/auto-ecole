@@ -203,11 +203,11 @@ const ActiviteTable: React.FC = () => {
               <td className="py-2 px-4">{activity.worker.name} </td>
               <td className="py-2 px-4"> {activity.car ? `${activity.car.model} ${activity.car.bn}` : 'N/A'} </td>
               <td className="py-2 px-4">{activity.customer.firstname} {activity.customer.lastname}</td>
-              <td className="py-2 px-4  ">{activity.mt}</td>
-              <td className="py-2 px-4">{activity.mp}</td>
+              <td className="py-2 px-4  ">{activity.mt} DT</td>
+              <td className="py-2 px-4">{activity.mp} DT</td>
              
-              <td className="py-2 px-4">{activity.nht}</td>
-              <td className="py-2 px-4">{activity.nhe}</td>
+              <td className="py-2 px-4">{activity.nht} H</td>
+              <td className="py-2 px-4">{activity.nhe} H</td>
               <td className="py-2 px-4"> {activity.dateexam ? formatDate(activity.dateexam) : 'N/A'}</td>
               <td className="py-2 px-4">  <select
             
