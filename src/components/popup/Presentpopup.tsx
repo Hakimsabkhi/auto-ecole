@@ -6,6 +6,7 @@ interface dealings {
   activite: task;
   hstart: string;
   hfinish: string;
+  
 }
 
 interface task {
@@ -43,9 +44,10 @@ interface Activite {
 interface PresentpopupProps {
  
   close: () => void;
+  fetchworking:()=>void;
   selectdealings?:dealings; 
 }
-const Presentpopup  : React.FC<PresentpopupProps> =({close,selectdealings })=>{
+const Presentpopup  : React.FC<PresentpopupProps> =({close,selectdealings ,fetchworking})=>{
   async function handleYesNo(id: string, button: string) {
     try {
       const response = await fetch(`/api/worker/dealings/updatestatus/${id}`, {
@@ -59,8 +61,9 @@ const Presentpopup  : React.FC<PresentpopupProps> =({close,selectdealings })=>{
       if (!response.ok) {
         throw new Error(`Failed to update dealings with id: ${id}`);
       }
-  
-      
+      fetchworking();
+      close();
+ 
   
     } catch (error) {
       console.error("Error updating dealings:", error);

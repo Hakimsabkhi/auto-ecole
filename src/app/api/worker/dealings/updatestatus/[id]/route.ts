@@ -4,6 +4,7 @@ import { getToken } from 'next-auth/jwt';
 import Dealings from '@/models/Dealings';
 import Company from '@/models/Company';
 import Worker from '@/models/Worker';
+import Task from '@/models/Task';
 
 async function getUserFromToken(req: NextRequest) {
   try {
@@ -47,14 +48,24 @@ export async function PUT(req: NextRequest, context: { params:Promise<{ id: stri
 
 const existingcompany =await Company.findById(result.user.company)
 if (!existingcompany){
-    return NextResponse.json({ message: '  company not exist ' }, { status: 405 });
+    return NextResponse.json({ message: '  company not exist ' }, { status: 402 });
 }
  const existingWorking= await Dealings.findOne({_id:id,company:existingcompany._id});
     if(!existingWorking){
         return NextResponse.json({ message: '  Working not exist ' }, { status: 405 });
     }
+   
+    
+
+ const existActivite=await Task.findById(existingWorking.activite._id);
+ if(!existActivite){
+  return NextResponse.json({ message: '  Working not exist ' }, { status: 408 });
+}
+console.log(existActivite);
     if(button==="yes"){
-        existingWorking.status=true;
+      existActivite.nhe=Number(existActivite.nhe)+1;
+      existActivite.save();
+      existingWorking.status=true;
     }
     if(button==="no"){
         existingWorking.status=false;

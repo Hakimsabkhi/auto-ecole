@@ -12,6 +12,7 @@ interface dealings {
   activite: task;
   hstart: string;
   hfinish: string;
+  status:boolean;
 }
 
 interface task {
@@ -278,7 +279,11 @@ const SchedulePage: React.FC = () => {
                       <div className="overflow-x-scroll h-24 w-56">
                         <div className="text-sm border-b-2 grid grid-flow-col ">
                           {matchingWorkings.map((matchingWork, idx) => (
-                            <div key={idx} className="relative  grid grid-cols-2 bg-gray-500 p-2 border-l-2 w-52 ">
+                            <div key={idx} className={`relative  grid grid-cols-2 p-2 border-l-2 w-52 ${
+                              matchingWork?.status === true ? "bg-green-500" :
+                              matchingWork?.status === false ? "bg-red-500" :
+                              "bg-gray-500"
+                            }`} >
                               <div className="flex flex-col items-start ">
                                 <span>A: {matchingWork.activite.activites.name}</span>
                                 <span>H.D: {matchingWork.hstart}</span>
