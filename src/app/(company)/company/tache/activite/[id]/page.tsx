@@ -32,7 +32,7 @@ const Page = ({ params }: { params: Promise<{ id: string }> }) => {
           
           
           if (unwrappedParams?.id) {
-            console.log(unwrappedParams)   
+          
        const fetchActivity= async () => {
           try {
             const response = await fetch(`/api/company/task/activite/getactivite/${unwrappedParams?.id}`);

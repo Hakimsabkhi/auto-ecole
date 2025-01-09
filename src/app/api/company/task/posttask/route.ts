@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     }
     // Parse the request body
     const body = await req.json();
-console.log(body)
+
     const {
         customer,
         activities,

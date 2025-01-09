@@ -47,7 +47,7 @@ const CustomerForm = ({ params }: { params: Promise<{ id: string }> }) => {
             `/api/company/customer/getcustomerbyid/${unwrappedParams.id}`
           );
           const { existingCustomer } = await response.json();
-          console.log(existingCustomer.dateexcode);
+        
           setFormData({
             cin: existingCustomer.cin,
             firstname: existingCustomer.firstname,

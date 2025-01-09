@@ -40,4 +40,15 @@ export const formatDate = (date:string) => {
     const formattedHour = parseInt(hour, 10);  // Converts to integer, removing leading zero
     return `${formattedHour}:${minutes}`;
   };
+  export const formatDates = (isoDate: string): string => {
+    const date = new Date(isoDate);
+  
+    return date.toLocaleDateString("fr-FR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+  
+ 
   
