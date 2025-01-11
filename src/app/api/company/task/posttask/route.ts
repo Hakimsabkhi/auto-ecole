@@ -6,6 +6,7 @@ import Customer from "@/models/Customer";
 import Task from "@/models/Task";
 import Activite from "@/models/Activite";
 import Worker from "@/models/Worker";
+import Historypay from "@/models/Historypay";
 async function getUserFromToken(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   if (!token) {
@@ -94,8 +95,11 @@ export async function POST(req: NextRequest) {
         { status: 409 }
       );
     }
+
+
+
 if(car===""){
-    await Task.create({
+   const task= await Task.create({
       customer: existingCustomer,
       worker:existworker,
       activites:existtypeactivite, // Make sure this matches the schema as "activites"
@@ -106,9 +110,17 @@ if(car===""){
       dateexam,
       company: result.user._id,
     });
+    if(Number(mp)!=0){
+      await Historypay.create({
+             amount:mp,
+                 task:task._id,
+               company: task.company,
+             });
+         
+   }
     
   }else{
-    await Task.create({
+    const task= await Task.create({
       customer: existingCustomer,
       worker:existworker,
       activites:existtypeactivite, // Make sure this matches the schema as "activites"
@@ -120,7 +132,15 @@ if(car===""){
       dateexam,
       company: result.user._id,
     });
-    
+    if(Number(mp)!=0){
+      await Historypay.create({
+             amount:mp,
+                 task:task._id,
+               company: task.company,
+             });
+         
+   }
+        
   }
  
 

@@ -1,6 +1,8 @@
 "use client"
 import { signOut, useSession } from 'next-auth/react'
+import Link from 'next/link'
 import React from 'react'
+import { MdOutlinePayments } from 'react-icons/md'
 
 
 const AccountantNav = () => {
@@ -27,6 +29,14 @@ const   { data: session } = useSession()
             </svg>
             <span>Dashboard</span>
           </a>
+        </li>
+        <li>
+          <Link
+          href={'/accountant/payment'}
+            className="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
+           <MdOutlinePayments size={23} className='mr-3'/> 
+            <span>Liste de paiement</span>
+          </Link>
         </li>
    
    

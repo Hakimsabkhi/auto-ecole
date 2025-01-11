@@ -42,7 +42,6 @@ const TacheFormupdate= ({ params }: { params: Promise<{ id: string }> }) => {
     activities: "",
     car:"",
     mt: 0,
-    mp: 0,
     nht: 0,
     nhe: 0,
     dateexam: "",
@@ -127,7 +126,6 @@ const TacheFormupdate= ({ params }: { params: Promise<{ id: string }> }) => {
         activities: existingaActivite.activites,
        car:existingaActivite.car,
         mt: existingaActivite.mt,
-        mp: existingaActivite.mp,
         nht: existingaActivite.nht,
         nhe: existingaActivite.nhe,
         dateexam:formatDate(existingaActivite.dateexam), 
@@ -285,7 +283,6 @@ try {
         activities: "",
         car:"",
         mt: 0,
-        mp: 0,
         nht: 0,
         nhe: 0,
         dateexam: "",
@@ -448,20 +445,6 @@ try {
             name="dateexam"
             type="datetime-local"
             value={formData.dateexam}
-            onChange={handleChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="mp" className="block text-sm font-medium text-gray-700">
-            Montant Payer
-          </label>
-          <input
-            id="mp"
-            name="mp"
-            type="number"
-            value={formData.mp}
             onChange={handleChange}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
           />

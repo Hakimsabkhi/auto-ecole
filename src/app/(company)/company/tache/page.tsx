@@ -174,7 +174,7 @@ const ActiviteTable: React.FC = () => {
               Montant Total
             </th>
             <th className="px-4 py-2 text-left font-medium text-gray-600">
-              Montant Payer
+            Montant Payé
             </th>
             
             <th className="px-4 py-2 text-left font-medium text-gray-600">

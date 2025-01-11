@@ -1,5 +1,5 @@
 import { formatDates } from '@/lib/timeforma';
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { LuPenLine, LuTrash2 } from 'react-icons/lu'
 interface Historypay{
     _id:string;
@@ -23,7 +23,7 @@ fetchActivities
   const [editingItemId, setEditingItemId] = useState<string>('');
   const [buttonColor, setButtonColor] = useState("bg-gray-400");
   const [isDisabled, setIsDisabled] = useState(true); // Track disabled state
-  async function fatchhistory(){
+  const fatchhistory = useCallback(async () => {
     try {
       const response = await fetch(
         `/api/accountant/task/gethistory/${selectid}`
@@ -41,7 +41,7 @@ fetchActivities
         console.error("An unknown error occurred");
       }
     }
-  }
+  }, [selectid]);
   const handleEdit = (id:string) => {
     if (editingItemId === id) {
       setEditingItemId(""); // If the same item is clicked, disable editing
@@ -53,7 +53,7 @@ fetchActivities
   };
   useEffect(() => {
     fatchhistory();  // Corrected function name
-  }, []);
+  }, [fatchhistory]);
   const totalAmount = historypay.reduce((total, item) => total + item.amount, 0);
   
   const handleAmountChange = (id: string, newAmount: number) => {

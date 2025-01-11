@@ -53,7 +53,6 @@ export async function PUT(
         activities,
         worker,
         mt,
-        mp,
         nht,
         nhe,
         dateexam,
@@ -93,9 +92,7 @@ export async function PUT(
     if(mt){
         existingaActivite.mt=mt 
     }
-    if(mp){
-        existingaActivite.mp=mp 
-    }
+   
     if(nht){
         existingaActivite.nht=nht 
     }

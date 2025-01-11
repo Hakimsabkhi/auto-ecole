@@ -18,6 +18,7 @@ export interface ITask extends Document {
   nhe: string;
   dateexam: Date;
   status:string;
+  statuspay:boolean;
   company: ICompany | string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -36,6 +37,7 @@ const TaskSchema: Schema = new Schema(
     nhe: {type: String,required: false },
     dateexam: {type: Date,required: false },
     status:{type:String,default:"en-coure"},
+    statuspay:{type:Boolean,default:false},
     company: { type: mongoose.Schema.Types.ObjectId, ref: "Company" },
   },
   { timestamps: true }

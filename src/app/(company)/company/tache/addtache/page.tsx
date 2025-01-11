@@ -409,7 +409,7 @@ const ActivitiesForm: React.FC = () => {
               htmlFor="mp"
               className="block text-sm font-medium text-gray-700"
             >
-              Montant Payer
+                Montant Payé
             </label>
             <input
               id="mp"
