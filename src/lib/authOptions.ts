@@ -14,12 +14,16 @@ declare module "next-auth" {
       name?: string | null;
       username?: string | null;
       role?: "Company" | "Worker" |"Accountant"| "Admin";
+      datesb?:string|null;
+      on?:boolean|null;
     } & DefaultSession["user"];
   }
 
   interface User {
     id: string;
     role: "Company" | "Worker" | "Accountant"| "Admin";
+    datesb:string;
+    on:boolean;
   }
 }
 
@@ -67,6 +71,8 @@ export const authOptions: NextAuthOptions = {
               name: admin.name,
               username: admin.username,
               role: "Admin",
+              datesb:"",
+              on:false,
             } as User;
           }
 
@@ -83,6 +89,8 @@ export const authOptions: NextAuthOptions = {
               name: company.name,
               username: company.username,
               role: "Company",
+              datesb:company.datesub,
+              on:company.on,
             } as User;
           }
 
@@ -94,11 +102,14 @@ export const authOptions: NextAuthOptions = {
               console.error("Invalid password for Worker username:", credentials.username);
               return null;
             }
+            const workercompany = await Company.findOne({ _id:worker.company }).exec();
             return {
               id: worker._id.toString(),
               name: worker.name,
               username: worker.username,
               role: "Worker",
+              datesb:"",
+              on:workercompany.on,
             } as User;
           }
           const accountant = await Accountant.findOne({ username: credentials.username }).exec();
@@ -109,11 +120,14 @@ export const authOptions: NextAuthOptions = {
               console.error("Invalid password for Accountant username:", credentials.username);
               return null;
             }
+            const accountantcompany = await Company.findOne({ _id:accountant.company }).exec();
             return {
               id: accountant._id.toString(),
               name: accountant.name,
               username: accountant.username,
               role: "Accountant",
+              datesb:"",
+              on:accountantcompany.on,
             } as User;
           }
 
@@ -133,6 +147,8 @@ export const authOptions: NextAuthOptions = {
         console.log("JWT callback - User info:", user);  // Log user data in JWT callback
         token.id = user.id;
         token.role = user.role;
+        token.datesb=user.datesb;
+        token.on=user.on;
       }
       return token;
     },
@@ -141,6 +157,8 @@ export const authOptions: NextAuthOptions = {
         console.log("Session callback - Token info:", token);  // Log token data in session callback
         session.user.id = token.id as string;
         session.user.role = token.role as "Company" | "Worker" |"Accountant"| "Admin";
+        session.user.datesb =token.datesb as string;
+        session.user.on=token.on as boolean;
       }
       return session;
     },

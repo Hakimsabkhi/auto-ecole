@@ -1,4 +1,5 @@
 "use client"
+import { formatDates } from '@/lib/timeforma'
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import React from 'react'
@@ -11,13 +12,18 @@ import { RiPoliceCarLine } from 'react-icons/ri'
 
 const CompanyNav = () => {
   const   { data: session } = useSession()
+
   return (
     <>
 
     <nav className="bg-[#f7f7f8] h-screen min-w-[280px] py-6 px-4 font-[sans-serif] ">
       
     <h1 className='font-bold pl-6 text-3xl uppercase text-blue-700'>{session?.user.name}</h1>
-  
+ <div   className={`p-3 rounded-lg flex justify-center mt-6 ${
+    new Date(session?.user.datesb|| '').toISOString() < new Date().toISOString()
+      ? 'bg-red-600'  // Change this to whatever background color you want for expired dates
+      : 'bg-green-600' // Default background color
+  }`}><h2 className='text-white text-sm font-bold' >Date expiration : {formatDates(session?.user.datesb || '')}</h2></div>
     <div className="overflow-auto py-6 h-full mt-4">
       <ul className="space-y-1">
         <li>

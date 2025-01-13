@@ -7,10 +7,9 @@ import { MdOutlinePayments } from 'react-icons/md'
 
 const AccountantNav = () => {
 const   { data: session } = useSession()
-
   return (
     <>
-    <nav className="bg-[#f7f7f8] h-screen  min-w-[250px] py-6 px-4 font-[sans-serif]">
+    <nav className="bg-[#f7f7f8] h-screen min-w-[280px] py-6 px-4 font-[sans-serif] ">
       <div className='flex flex-col justify-center items-center'>
     <h1 className='font-bold pl-6 text-3xl uppercase text-blue-800'>Comptable:</h1>
     <h1 className='font-bold pl-6 text-3xl uppercase text-blue-700'>{session?.user.name}</h1>
@@ -19,7 +18,8 @@ const   { data: session } = useSession()
    
       <ul className="space-y-1">
         <li>
-          <a 
+          <Link 
+          href="/accountant"
             className="text-black hover:text-blue-600 text-[15px] flex items-center hover:bg-white rounded px-4 py-3 transition-all">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="w-[18px] h-[18px] mr-4"
               viewBox="0 0 512 512">
@@ -28,7 +28,7 @@ const   { data: session } = useSession()
                 data-original="#000000" />
             </svg>
             <span>Dashboard</span>
-          </a>
+          </Link>
         </li>
         <li>
           <Link
