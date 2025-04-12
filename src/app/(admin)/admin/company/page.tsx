@@ -10,8 +10,8 @@ import { RiDeleteBin5Line } from 'react-icons/ri';
 interface Subscription {
   _id: number;
   name: string;
-  life: string;
-  price: string;
+  life: number;
+  price: number;
 }
 
 interface Company {
@@ -119,7 +119,7 @@ const CompanyTable = () => {
 
       const fetchSubscriptions = async () => {
         try {
-          const response = await fetch('/api/admin/subscription/getsubscriptionactive');  // Replace with your actual API endpoint
+          const response = await fetch('/api/admin/subscription/getpricingstatussubscription');  // Replace with your actual API endpoint
           const data = await response.json();
           setSubscriptions(data);
         
@@ -187,7 +187,7 @@ const CompanyTable = () => {
               <td className="px-4 py-2">{company.name}</td>
               <td className="px-4 py-2">{company.phone}</td>
               <td className="px-4 py-2">{formatDate(company.datestart)}</td>
-              <td className="px-4 py-2">{company.subscription.name} - {company.subscription.life} day - {company.subscription.price} TND</td>
+              <td className="px-4 py-2">{company.subscription?.name} - {company.subscription?.life} day - {company.subscription?.price} TND</td>
               <td className="px-4 py-2">{formatDate(company.datesub)}</td>
               <td className={`px-4 py-2 ${
                 company.on ? 'text-green-500' : 'text-red-500'

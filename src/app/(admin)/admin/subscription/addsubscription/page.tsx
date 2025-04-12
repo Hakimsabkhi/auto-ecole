@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 interface FormData {
   name: string;
   price: number;
-  life: string;
+  life: number;
 }
 
 const SubscriptionForm = () => {
@@ -14,7 +14,7 @@ const SubscriptionForm = () => {
   const [formData, setFormData] = useState<FormData>({
     name: '',
     price: 0,
-    life: '',
+    life: 0,
   });
 
   // Handle form field changes
@@ -49,7 +49,7 @@ const SubscriptionForm = () => {
       setFormData({
         name: '',
         price: 0,
-        life: '',
+        life: 0,
       });
      
 
@@ -100,7 +100,7 @@ const SubscriptionForm = () => {
             Life Day :
           </label>
           <input
-            type="text"
+            type="number"
             id="life"
             name="life"
             value={formData.life}

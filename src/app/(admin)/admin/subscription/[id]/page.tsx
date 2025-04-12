@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 interface FormData {
   name: string;
   price: number;
-  life: string;
+  life: number;
 }
 
 export default function UpdateSubscription({ params }: { params: Promise<{ id: string }> }) {
@@ -33,7 +33,7 @@ export default function UpdateSubscription({ params }: { params: Promise<{ id: s
   const [formData, setFormData] = useState<FormData>({
     name: '',
     price: 0,
-    life: '',
+    life: 0,
   });
 
   // Fetch subscription data when id is available
@@ -150,7 +150,7 @@ export default function UpdateSubscription({ params }: { params: Promise<{ id: s
             Life Day:
           </label>
           <input
-            type="text"
+           type="number"
             id="life"
             name="life"
             value={formData.life}

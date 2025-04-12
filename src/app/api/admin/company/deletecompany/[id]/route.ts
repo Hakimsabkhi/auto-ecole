@@ -12,7 +12,7 @@ async function getUserFromToken(req: NextRequest) {
     }
 
     // Fetch the user from the Admin model based on the token email
-    const user = await Admin.findOne({ _id: token.id }).exec();
+    const user = await Admin.findById({ _id: token.id }).exec();
     if (!user) {
       return { error: 'User not found', status: 404 };
     }
@@ -46,7 +46,7 @@ export async function DELETE(req: NextRequest, context: { params: Promise<{ id: 
     // Check if the Company exists
     const deletedCompany = await Company.findByIdAndDelete(id);
     if (!deletedCompany) {
-      return NextResponse.json({ message: ' Company not found' }, { status: 404 });
+      return NextResponse.json({ message: ' Company not found' }, { status: 408 });
     }
 
     // Return success response

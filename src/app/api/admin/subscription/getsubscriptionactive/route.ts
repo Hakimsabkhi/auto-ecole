@@ -9,7 +9,7 @@ async function getUserFromToken(req: NextRequest) {
       return { error: 'Unauthorized', status: 401 };
     }
   
-    const user = await Admin.findOne({ _id: token.id }).exec();
+    const user = await Admin.findById({ _id: token.id }).exec();
     if (!user) {
       return { error: 'User not found', status: 404 };
     }
@@ -23,7 +23,7 @@ try{
     if ('error' in result) {
       return NextResponse.json({ error: result.error }, { status: result.status });
     }
-    const subscription= await Subscription.find({status:"Active"}).sort({ life: -1 });
+    const subscription= await Subscription.find({status:"Active"}).sort({ life: 1 });
     if(!subscription){
       return NextResponse.json({ message:'no data' }, { status: 501 });
     }

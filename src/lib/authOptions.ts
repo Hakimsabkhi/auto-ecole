@@ -5,6 +5,7 @@ import connectToDatabase from "@/lib/db";
 import Admin from "@/models/Admin";
 import Company from "@/models/Company";
 import Worker from "@/models/Worker";
+import Accountant from "@/models/Accountant";
 
 declare module "next-auth" {
   interface Session {
@@ -12,13 +13,17 @@ declare module "next-auth" {
       id: string;
       name?: string | null;
       username?: string | null;
-      role?: "Company" | "Worker" | "Admin";
+      role?: "Company" | "Worker" |"Accountant"| "Admin";
+      datesb?:string|null;
+      on?:boolean|null;
     } & DefaultSession["user"];
   }
 
   interface User {
     id: string;
-    role: "Company" | "Worker" | "Admin";
+    role: "Company" | "Worker" | "Accountant"| "Admin";
+    datesb:string;
+    on:boolean;
   }
 }
 
@@ -66,6 +71,8 @@ export const authOptions: NextAuthOptions = {
               name: admin.name,
               username: admin.username,
               role: "Admin",
+              datesb:"",
+              on:false,
             } as User;
           }
 
@@ -82,6 +89,8 @@ export const authOptions: NextAuthOptions = {
               name: company.name,
               username: company.username,
               role: "Company",
+              datesb:company.datesub,
+              on:company.on,
             } as User;
           }
 
@@ -93,13 +102,35 @@ export const authOptions: NextAuthOptions = {
               console.error("Invalid password for Worker username:", credentials.username);
               return null;
             }
+            const workercompany = await Company.findOne({ _id:worker.company }).exec();
             return {
               id: worker._id.toString(),
               name: worker.name,
               username: worker.username,
               role: "Worker",
+              datesb:"",
+              on:workercompany.on,
             } as User;
           }
+          const accountant = await Accountant.findOne({ username: credentials.username }).exec();
+          if (accountant) {
+            console.log("Accountant found:", accountant);
+            const isPasswordValid = bcrypt.compareSync(credentials.password, accountant.password || "");
+            if (!isPasswordValid) {
+              console.error("Invalid password for Accountant username:", credentials.username);
+              return null;
+            }
+            const accountantcompany = await Company.findOne({ _id:accountant.company }).exec();
+            return {
+              id: accountant._id.toString(),
+              name: accountant.name,
+              username: accountant.username,
+              role: "Accountant",
+              datesb:"",
+              on:accountantcompany.on,
+            } as User;
+          }
+
 
           console.error("No entity found with this username:", credentials.username);
           return null;
@@ -116,6 +147,8 @@ export const authOptions: NextAuthOptions = {
         console.log("JWT callback - User info:", user);  // Log user data in JWT callback
         token.id = user.id;
         token.role = user.role;
+        token.datesb=user.datesb;
+        token.on=user.on;
       }
       return token;
     },
@@ -123,7 +156,9 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         console.log("Session callback - Token info:", token);  // Log token data in session callback
         session.user.id = token.id as string;
-        session.user.role = token.role as "Company" | "Worker" | "Admin";
+        session.user.role = token.role as "Company" | "Worker" |"Accountant"| "Admin";
+        session.user.datesb =token.datesb as string;
+        session.user.on=token.on as boolean;
       }
       return session;
     },

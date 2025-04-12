@@ -3,8 +3,8 @@ import React from 'react';
 interface Subscription {
   _id: number;
   name: string;
-  life: string;
-  price: string;
+  life: number;
+  price: number;
 }
 
 interface SubscriptionPopupProps {

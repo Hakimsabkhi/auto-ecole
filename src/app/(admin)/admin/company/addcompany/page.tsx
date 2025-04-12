@@ -16,7 +16,7 @@ interface SubscriptionOption {
   _id: string;
   name: string;
   price:number;
-  life:string;
+  life:number;
 }
 
 const FormComapny = () => {

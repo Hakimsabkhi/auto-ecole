@@ -3,6 +3,7 @@ import connectToDatabase from '@/lib/db';
 import { getToken } from 'next-auth/jwt';
 import Company from '@/models/Company';
 import Worker from '@/models/Worker';
+import Activite from '@/models/Activite';
 async function getUserFromToken(req: NextRequest) {
   try {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
@@ -11,7 +12,7 @@ async function getUserFromToken(req: NextRequest) {
     }
 
     // Fetch the user from the Admin model based on the token email
-    const user = await Company.findOne({ _id: token.id  }).exec();
+    const user = await Company.findById({ _id: token.id  }).exec();
     if (!user) {
       return { error: 'User not found', status: 404 };
     }
@@ -42,13 +43,13 @@ export async function GET(req: NextRequest,context: { params: Promise<{ id: stri
       return NextResponse.json({ message: 'Invalid or missing worker ID' }, { status: 400 });
     }
 
-
-        // Check if the subscription exists
-    const existingWorker= await Worker.findOne({_id:id,company:result.user._id});
+await Activite.find();
+        // Check if the worker exist
+    const existingWorker= await Worker.findOne({_id:id,company:result.user._id}).populate('formateur');
     if (!existingWorker) {
       return NextResponse.json(
         { message: "worker not found" },
-        { status: 404 }
+        { status: 408 }
       );
     }
   
